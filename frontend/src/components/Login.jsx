@@ -15,7 +15,7 @@ const Login = () => {
     name: '',
     phone: '',
     passwordConfirm: '',
-    role: 'patient',
+    role: 'user',
   });
 
   const handleChange = (e) => {
@@ -111,20 +111,20 @@ const Login = () => {
       name: '',
       phone: '',
       passwordConfirm: '',
-      role: 'patient',
+      role: 'user',
     });
     setError('');
     setSuccess('');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-50 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-50 flex items-center justify-center px-4 py-6 sm:py-12">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-block p-3 bg-teal-100 rounded-full mb-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-block p-3 bg-primary-100 rounded-full mb-4">
             <svg
-              className="w-8 h-8 text-teal-600"
+              className="w-8 h-8 text-primary-600"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -136,31 +136,31 @@ const Login = () => {
               />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Morya Medical</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Morya Medical</h1>
           <p className="text-gray-600">
             {isLogin ? 'Welcome back!' : 'Join us today'}
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="card p-8 shadow-lg">
+        <div className="card p-6 sm:p-8 shadow-lg">
           {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-700 text-sm font-medium">{error}</p>
+            <div className="mb-4 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-xs sm:text-sm font-medium">{error}</p>
             </div>
           )}
 
           {success && (
-            <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-700 text-sm font-medium">{success}</p>
+            <div className="mb-4 p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-green-700 text-xs sm:text-sm font-medium">{success}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             {/* Name Field - Only for Register */}
             {!isLogin && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Full Name
                 </label>
                 <input
@@ -169,14 +169,14 @@ const Login = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Enter your full name"
-                  className="form-input"
+                  className="form-input text-sm"
                 />
               </div>
             )}
 
             {/* Email Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Email Address
               </label>
               <input
@@ -185,14 +185,14 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className="form-input"
+                className="form-input text-sm"
               />
             </div>
 
             {/* Phone Field - Only for Register */}
             {!isLogin && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Phone Number
                 </label>
                 <input
@@ -202,32 +202,30 @@ const Login = () => {
                   onChange={handleChange}
                   placeholder="10-digit phone number"
                   maxLength="10"
-                  className="form-input"
+                  className="form-input text-sm"
                 />
               </div>
             )}
 
-            {/* Role Field - Only for Register */}
+            {/* Sign up as Admin Checkbox - Only for Register */}
             {!isLogin && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  I am registering as
+              <div className="p-3 bg-gray-50 rounded-lg flex items-center">
+                <input
+                  type="checkbox"
+                  id="signupAsAdmin"
+                  checked={formData.role === 'admin'}
+                  onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.checked ? 'admin' : 'user' }))}
+                  className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500 cursor-pointer"
+                />
+                <label htmlFor="signupAsAdmin" className="ml-2 text-xs sm:text-sm text-gray-700 cursor-pointer font-medium">
+                  Sign up as Admin
                 </label>
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  className="form-input"
-                >
-                  <option value="patient">Patient</option>
-                  <option value="admin">Pharmacist Admin</option>
-                </select>
               </div>
             )}
 
             {/* Password Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
               <input
@@ -236,10 +234,10 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Enter password"
-                className="form-input"
+                className="form-input text-sm"
               />
               {isLogin && (
-                <p className="text-right text-xs text-teal-600 hover:text-teal-700 mt-1 cursor-pointer">
+                <p className="text-right text-xs text-primary-600 hover:text-primary-700 mt-1 cursor-pointer">
                   Forgot password?
                 </p>
               )}
@@ -248,7 +246,7 @@ const Login = () => {
             {/* Confirm Password Field - Only for Register */}
             {!isLogin && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   Confirm Password
                 </label>
                 <input
@@ -257,7 +255,7 @@ const Login = () => {
                   value={formData.passwordConfirm}
                   onChange={handleChange}
                   placeholder="Confirm password"
-                  className="form-input"
+                  className="form-input text-sm"
                 />
               </div>
             )}
@@ -266,7 +264,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary w-full mt-4 sm:mt-6 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
@@ -301,13 +299,13 @@ const Login = () => {
           </form>
 
           {/* Toggle Link */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+          <div className="mt-4 sm:mt-6 text-center">
+            <p className="text-xs sm:text-sm text-gray-600">
               {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
               <button
                 type="button"
                 onClick={toggleMode}
-                className="text-teal-600 font-semibold hover:text-teal-700 transition-colors"
+                className="text-primary-600 font-semibold hover:text-primary-700 transition-colors"
               >
                 {isLogin ? 'Sign Up' : 'Sign In'}
               </button>
@@ -316,13 +314,13 @@ const Login = () => {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-xs text-gray-500 mt-6">
+        <p className="text-center text-xs text-gray-500 mt-4 sm:mt-6">
           By continuing, you agree to our{' '}
-          <span className="text-teal-600 cursor-pointer hover:underline">
+          <span className="text-primary-600 cursor-pointer hover:underline">
             Terms of Service
           </span>{' '}
           and{' '}
-          <span className="text-teal-600 cursor-pointer hover:underline">
+          <span className="text-primary-600 cursor-pointer hover:underline">
             Privacy Policy
           </span>
         </p>

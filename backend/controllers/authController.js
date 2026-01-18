@@ -45,7 +45,7 @@ exports.register = async (req, res) => {
       email,
       phone,
       password,
-      role: role || 'patient',
+      role: role || 'user',
     });
 
     // Remove password from response
