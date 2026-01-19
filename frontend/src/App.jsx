@@ -4,6 +4,8 @@ import './styles/globals.css';
 import Login from './components/Login';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import UserProfile from './pages/UserProfile';
+import UserSettings from './pages/UserSettings';
 import { authService } from './utils/authService';
 
 const PrivateRoute = ({ children }) => {
@@ -17,6 +19,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/admin" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
+        <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+        <Route path="/settings" element={<PrivateRoute><UserSettings /></PrivateRoute>} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>

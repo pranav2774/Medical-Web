@@ -47,6 +47,25 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    settings: {
+      emailNotifications: {
+        type: Boolean,
+        default: true,
+      },
+      orderUpdates: {
+        type: Boolean,
+        default: true,
+      },
+      promotions: {
+        type: Boolean,
+        default: false,
+      },
+      theme: {
+        type: String,
+        enum: ['light', 'dark', 'auto'],
+        default: 'light',
+      },
+    },
   },
   { timestamps: true }
 );

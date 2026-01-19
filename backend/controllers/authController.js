@@ -154,3 +154,154 @@ exports.logout = async (req, res) => {
     message: 'Logout successful',
   });
 };
+
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, phone, address } = req.body;
+
+    // Validation
+    if (!name || !phone) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide name and phone',
+      });
+    }
+
+    if (phone.length !== 10) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid 10-digit phone number',
+      });
+    }
+
+    // Update user
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { name, phone, address },
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      user,
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Server error during profile update',
+    });
+  }
+};
+
+// @desc    Update user settings
+// @route   PUT /api/auth/settings
+// @access  Private
+exports.updateSettings = async (req, res) => {
+  try {
+    const { settings } = req.body;
+
+    if (!settings) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide settings',
+      });
+    }
+
+    // Update user settings
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { settings },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Settings updated successfully',
+      user,
+    });
+  } catch (error) {
+    console.error('Update settings error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Server error during settings update',
+    });
+  }
+};
+
+// @desc    Change user password
+// @route   PUT /api/auth/change-password
+// @access  Private
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    // Validation
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide current and new password',
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters',
+      });
+    }
+
+    // Get user with password field
+    const user = await User.findById(req.user.id).select('+password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    // Check if current password matches
+    const isMatch = await user.matchPassword(currentPassword);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Current password is incorrect',
+      });
+    }
+
+    //// Update password
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password changed successfully',
+    });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Server error during password change',
+    });
+  }
+};

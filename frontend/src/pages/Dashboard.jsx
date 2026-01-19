@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { authService } from '../utils/authService';
+import UserDropdown from '../components/UserDropdown';
 import logoImg from '../assets/logo.png';
 
 const Dashboard = () => {
@@ -9,11 +10,6 @@ const Dashboard = () => {
     const currentUser = authService.getCurrentUser();
     setUser(currentUser);
   }, []);
-
-  const handleLogout = () => {
-    authService.logout();
-    window.location.href = '/login';
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white">
@@ -26,13 +22,7 @@ const Dashboard = () => {
               <div className="text-xl sm:text-2xl font-bold text-primary-600">Morya Medical</div>
             </div>
             <div className="flex items-center gap-2 sm:gap-4">
-              <span className="hidden sm:inline text-gray-600 text-sm">Welcome, {user?.name}!</span>
-              <button
-                onClick={handleLogout}
-                className="btn-primary text-xs sm:text-sm px-3 sm:px-6 py-1 sm:py-2"
-              >
-                Logout
-              </button>
+              {user && <UserDropdown user={user} />}
             </div>
           </div>
         </div>
