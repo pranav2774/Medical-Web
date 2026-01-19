@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { authService } from '../utils/authService';
 import logoImg from '../assets/logo.png';
 
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser();
     setUser(currentUser);
-    
+
     // Redirect if not admin
     if (currentUser?.role !== 'admin') {
       window.location.href = '/dashboard';
@@ -19,6 +21,10 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     authService.logout();
     window.location.href = '/login';
+  };
+
+  const isActive = (path) => {
+    return location.pathname === path;
   };
 
   return (
@@ -37,11 +43,11 @@ const AdminDashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              
-              <div className="flex items-center gap-2 sm:gap-3">
+
+              <Link to="/admin" className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition">
                 <img src={logoImg} alt="Morya Medical Logo" className="h-10 w-10 sm:h-12 sm:w-12" />
                 <div className="text-xl sm:text-2xl font-bold text-primary-600">Morya Medical</div>
-              </div>
+              </Link>
               <div className="hidden sm:block text-sm font-semibold text-primary-600 bg-primary-100 px-3 py-1 rounded-full">
                 Admin Panel
               </div>
@@ -62,14 +68,29 @@ const AdminDashboard = () => {
       {/* Sidebar & Main Content */}
       <div className="flex">
         {/* Sidebar */}
-        <aside className={`fixed md:static w-64 bg-white shadow-sm min-h-[calc(100vh-64px)] z-40 transform transition-transform duration-300 ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        }`}>
+        <aside className={`fixed md:static w-64 bg-white shadow-sm min-h-[calc(100vh-64px)] z-40 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+          }`}>
           <div className="p-4 sm:p-6 space-y-4">
             <h3 className="text-sm font-semibold text-gray-500 uppercase">Menu</h3>
             <nav className="space-y-2">
-              <a href="#" className="block px-4 py-2 rounded-lg bg-primary-50 text-primary-600 font-semibold text-sm hover:bg-primary-100 transition">Dashboard</a>
-              <a href="#" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 text-sm transition">Medicines</a>
+              <Link
+                to="/admin"
+                className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin')
+                  ? 'bg-primary-50 text-primary-600 font-semibold'
+                  : 'text-gray-700'
+                  }`}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/admin/store"
+                className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/store')
+                  ? 'bg-primary-50 text-primary-600 font-semibold'
+                  : 'text-gray-700'
+                  }`}
+              >
+                Store Management
+              </Link>
               <a href="#" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 text-sm transition">Orders</a>
               <a href="#" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 text-sm transition">Users</a>
               <a href="#" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 text-sm transition">Reports</a>
