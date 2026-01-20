@@ -22,10 +22,12 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Routes
 const authRoutes = require('./routes/auth');
 const medicineRoutes = require('./routes/medicines');
+const userRoutes = require('./routes/users');
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/medicines', medicineRoutes);
+app.use('/api/users', userRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

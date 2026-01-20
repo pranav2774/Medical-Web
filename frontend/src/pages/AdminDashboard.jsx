@@ -91,9 +91,15 @@ const AdminDashboard = () => {
               >
                 Store Management
               </Link>
-              <a href="#" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 text-sm transition">Orders</a>
-              <a href="#" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 text-sm transition">Users</a>
-              <a href="#" className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-50 text-sm transition">Reports</a>
+              <Link
+                to="/admin/customers"
+                className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/customers')
+                  ? 'bg-primary-50 text-primary-600 font-semibold'
+                  : 'text-gray-700'
+                  }`}
+              >
+                User Management
+              </Link>
             </nav>
           </div>
         </aside>
@@ -108,32 +114,9 @@ const AdminDashboard = () => {
 
         {/* Main Content */}
         <main className="flex-1 p-4 sm:p-8 w-full">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
-            {/* Stats Cards will be added here */}
-          </div>
-
-          {/* Orders Table */}
-          <div className="card p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900">Pending Orders</h2>
-              <button className="btn-primary text-xs sm:text-sm w-full sm:w-auto">View All</button>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs sm:text-sm">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-gray-700 font-semibold">Order ID</th>
-                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-gray-700 font-semibold hidden sm:table-cell">Patient</th>
-                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-gray-700 font-semibold hidden lg:table-cell">Medicines</th>
-                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-gray-700 font-semibold">Amount</th>
-                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-gray-700 font-semibold">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* Orders will be displayed here */}
-                </tbody>
-              </table>
-            </div>
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-gray-700 mb-4">Welcome to Admin Dashboard</h2>
+            <p className="text-gray-500">Use the sidebar to navigate to different sections</p>
           </div>
         </main>
       </div>
