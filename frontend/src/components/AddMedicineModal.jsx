@@ -13,6 +13,7 @@ const AddMedicineModal = ({ onClose, onSubmit }) => {
         batchNumber: '',
         requiresPrescription: false,
         image: '',
+        illnessCategory: '',
     });
 
     const [errors, setErrors] = useState({});
@@ -151,6 +152,34 @@ const AddMedicineModal = ({ onClose, onSubmit }) => {
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                 placeholder="Enter manufacturer"
                             />
+                        </div>
+
+                        {/* Illness Category */}
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Illness Category (Optional)
+                            </label>
+                            <select
+                                name="illnessCategory"
+                                value={formData.illnessCategory}
+                                onChange={handleChange}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            >
+                                <option value="">None / Not Specified</option>
+                                <option value="headache">Headache</option>
+                                <option value="stomach-pain">Stomach Pain</option>
+                                <option value="fever">Fever / Temperature</option>
+                                <option value="cough">Cough</option>
+                                <option value="cold">Cold</option>
+                                <option value="allergy">Allergy</option>
+                                <option value="pain-relief">Pain Relief</option>
+                                <option value="diabetes">Diabetes</option>
+                                <option value="hypertension">Hypertension / Blood Pressure</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <p className="text-xs text-gray-500 mt-1">
+                                Select the general illness this medicine is commonly used for
+                            </p>
                         </div>
 
                         {/* Price */}

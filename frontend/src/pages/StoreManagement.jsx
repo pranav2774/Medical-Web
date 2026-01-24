@@ -24,6 +24,7 @@ const StoreManagement = () => {
     // Filter and search states
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
+    const [illnessFilter, setIllnessFilter] = useState('');
     const [stockFilter, setStockFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -38,7 +39,7 @@ const StoreManagement = () => {
         }
 
         fetchMedicines();
-    }, [currentPage, searchTerm, categoryFilter, stockFilter]);
+    }, [currentPage, searchTerm, categoryFilter, illnessFilter, stockFilter]);
 
     const fetchMedicines = async () => {
         try {
@@ -52,6 +53,7 @@ const StoreManagement = () => {
 
             if (searchTerm) params.search = searchTerm;
             if (categoryFilter) params.category = categoryFilter;
+            if (illnessFilter) params.illnessCategory = illnessFilter;
             if (stockFilter !== '') params.stockStatus = stockFilter;
 
             const response = await medicineService.getAllMedicines(params);
@@ -193,12 +195,12 @@ const StoreManagement = () => {
 
                     {/* Search and Filters */}
                     <div className="card p-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                             {/* Search */}
                             <div className="lg:col-span-2">
                                 <input
                                     type="text"
-                                    placeholder="Search by name or manufacturer..."
+                                    placeholder="Search by name, manufacturer, or illness..."
                                     value={searchTerm}
                                     onChange={(e) => {
                                         setSearchTerm(e.target.value);
@@ -224,6 +226,30 @@ const StoreManagement = () => {
                                     <option value="syrup">Syrup</option>
                                     <option value="injection">Injection</option>
                                     <option value="cream">Cream</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            {/* Illness Category Filter */}
+                            <div>
+                                <select
+                                    value={illnessFilter}
+                                    onChange={(e) => {
+                                        setIllnessFilter(e.target.value);
+                                        setCurrentPage(1);
+                                    }}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                >
+                                    <option value="">All Illnesses</option>
+                                    <option value="headache">Headache</option>
+                                    <option value="stomach-pain">Stomach Pain</option>
+                                    <option value="fever">Fever</option>
+                                    <option value="cough">Cough</option>
+                                    <option value="cold">Cold</option>
+                                    <option value="allergy">Allergy</option>
+                                    <option value="pain-relief">Pain Relief</option>
+                                    <option value="diabetes">Diabetes</option>
+                                    <option value="hypertension">Hypertension</option>
                                     <option value="other">Other</option>
                                 </select>
                             </div>

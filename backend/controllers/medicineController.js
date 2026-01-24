@@ -8,6 +8,7 @@ const getAllMedicines = async (req, res) => {
         const {
             search,
             category,
+            illnessCategory,
             stockStatus,
             requiresPrescription,
             page = 1,
@@ -19,17 +20,23 @@ const getAllMedicines = async (req, res) => {
         // Build query object
         const query = {};
 
-        // Search by name or manufacturer
+        // Search by name, manufacturer, or illness category
         if (search) {
             query.$or = [
                 { name: { $regex: search, $options: 'i' } },
                 { manufacturer: { $regex: search, $options: 'i' } },
+                { illnessCategory: { $regex: search, $options: 'i' } },
             ];
         }
 
         // Filter by category
         if (category) {
             query.category = category;
+        }
+
+        // Filter by illness category
+        if (illnessCategory) {
+            query.illnessCategory = illnessCategory;
         }
 
         // Filter by stock status
@@ -119,6 +126,7 @@ const createMedicine = async (req, res) => {
             batchNumber,
             requiresPrescription,
             image,
+            illnessCategory,
         } = req.body;
 
         // Validate required fields
@@ -151,6 +159,7 @@ const createMedicine = async (req, res) => {
             batchNumber,
             requiresPrescription: requiresPrescription || false,
             image,
+            illnessCategory,
         });
 
         res.status(201).json({
@@ -195,6 +204,7 @@ const updateMedicine = async (req, res) => {
             batchNumber,
             requiresPrescription,
             image,
+            illnessCategory,
         } = req.body;
 
         if (name) medicine.name = name;
@@ -208,6 +218,7 @@ const updateMedicine = async (req, res) => {
         if (batchNumber !== undefined) medicine.batchNumber = batchNumber;
         if (requiresPrescription !== undefined) medicine.requiresPrescription = requiresPrescription;
         if (image !== undefined) medicine.image = image;
+        if (illnessCategory !== undefined) medicine.illnessCategory = illnessCategory;
 
         await medicine.save();
 

@@ -58,6 +58,12 @@ const medicineSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    illnessCategory: {
+      type: String,
+      trim: true,
+      enum: ['headache', 'stomach-pain', 'fever', 'cough', 'cold', 'allergy', 'pain-relief', 'diabetes', 'hypertension', 'other', ''],
+      default: '',
+    },
   },
   { timestamps: true }
 );

@@ -10,6 +10,7 @@ const getPublicMedicines = async (req, res) => {
         const {
             search,
             category,
+            illnessCategory,
             stockStatus,
             page = 1,
             limit = 20,
@@ -20,17 +21,23 @@ const getPublicMedicines = async (req, res) => {
         // Build query object
         const query = {};
 
-        // Search by name or manufacturer
+        // Search by name, manufacturer, or illness category
         if (search) {
             query.$or = [
                 { name: { $regex: search, $options: 'i' } },
                 { manufacturer: { $regex: search, $options: 'i' } },
+                { illnessCategory: { $regex: search, $options: 'i' } },
             ];
         }
 
         // Filter by category
         if (category && category !== 'all') {
             query.category = category;
+        }
+
+        // Filter by illness category
+        if (illnessCategory && illnessCategory !== 'all') {
+            query.illnessCategory = illnessCategory;
         }
 
         // Filter by stock status

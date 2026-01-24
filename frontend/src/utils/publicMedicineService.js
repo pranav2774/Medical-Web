@@ -7,6 +7,7 @@ export const getPublicMedicines = async (params = {}) => {
 
         if (params.search) queryParams.append('search', params.search);
         if (params.category && params.category !== 'all') queryParams.append('category', params.category);
+        if (params.illnessCategory && params.illnessCategory !== 'all') queryParams.append('illnessCategory', params.illnessCategory);
         if (params.stockStatus && params.stockStatus !== 'all') queryParams.append('stockStatus', params.stockStatus);
         if (params.sortBy) queryParams.append('sortBy', params.sortBy);
         if (params.order) queryParams.append('order', params.order);

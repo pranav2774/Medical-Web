@@ -17,6 +17,7 @@ const UserMedicineStore = () => {
     // Filter and search states
     const [searchQuery, setSearchQuery] = useState('');
     const [category, setCategory] = useState('all');
+    const [illnessCategory, setIllnessCategory] = useState('all');
     const [stockStatus, setStockStatus] = useState('all');
     const [sortBy, setSortBy] = useState('name');
     const [sortOrder, setSortOrder] = useState('asc');
@@ -33,6 +34,20 @@ const UserMedicineStore = () => {
         { value: 'syrup', label: 'Syrup' },
         { value: 'injection', label: 'Injection' },
         { value: 'cream', label: 'Cream' },
+        { value: 'other', label: 'Other' },
+    ];
+
+    const illnesses = [
+        { value: 'all', label: 'All Illnesses' },
+        { value: 'headache', label: 'Headache' },
+        { value: 'stomach-pain', label: 'Stomach Pain' },
+        { value: 'fever', label: 'Fever / Temperature' },
+        { value: 'cough', label: 'Cough' },
+        { value: 'cold', label: 'Cold' },
+        { value: 'allergy', label: 'Allergy' },
+        { value: 'pain-relief', label: 'Pain Relief' },
+        { value: 'diabetes', label: 'Diabetes' },
+        { value: 'hypertension', label: 'Hypertension' },
         { value: 'other', label: 'Other' },
     ];
 
@@ -62,7 +77,7 @@ const UserMedicineStore = () => {
 
     useEffect(() => {
         fetchMedicines();
-    }, [searchQuery, category, stockStatus, sortBy, sortOrder, page]);
+    }, [searchQuery, category, illnessCategory, stockStatus, sortBy, sortOrder, page]);
 
     const fetchMedicines = async () => {
         try {
@@ -72,6 +87,7 @@ const UserMedicineStore = () => {
             const params = {
                 search: searchQuery || undefined,
                 category: category !== 'all' ? category : undefined,
+                illnessCategory: illnessCategory !== 'all' ? illnessCategory : undefined,
                 stockStatus: stockStatus !== 'all' ? stockStatus : undefined,
                 sortBy,
                 order: sortOrder,
@@ -198,7 +214,7 @@ const UserMedicineStore = () => {
                             <div className="relative">
                                 <input
                                     type="text"
-                                    placeholder="Search medicines by name or manufacturer..."
+                                    placeholder="Search medicines by name, manufacturer, or illness..."
                                     value={searchQuery}
                                     onChange={handleSearchChange}
                                     className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm sm:text-base"
@@ -220,7 +236,7 @@ const UserMedicineStore = () => {
                         </div>
 
                         {/* Filters Row */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                             {/* Category Filter */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Category</label>
@@ -231,6 +247,23 @@ const UserMedicineStore = () => {
                                 >
                                     {categories.map(cat => (
                                         <option key={cat.value} value={cat.value}>{cat.label}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Illness Category Filter */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Illness</label>
+                                <select
+                                    value={illnessCategory}
+                                    onChange={(e) => {
+                                        setIllnessCategory(e.target.value);
+                                        setPage(1);
+                                    }}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                                >
+                                    {illnesses.map(illness => (
+                                        <option key={illness.value} value={illness.value}>{illness.label}</option>
                                     ))}
                                 </select>
                             </div>
@@ -318,6 +351,7 @@ const UserMedicineStore = () => {
                                 onClick={() => {
                                     setSearchQuery('');
                                     setCategory('all');
+                                    setIllnessCategory('all');
                                     setStockStatus('all');
                                     setPage(1);
                                 }}
