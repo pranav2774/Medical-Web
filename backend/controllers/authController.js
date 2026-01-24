@@ -16,7 +16,7 @@ exports.register = async (req, res) => {
     const { name, email, phone, password, passwordConfirm, role } = req.body;
 
     // Validation
-    if (!name || !email || !phone || !password || !passwordConfirm) {
+    if (!name || !email || !password || !passwordConfirm) {
       return res.status(400).json({
         success: false,
         message: 'Please provide all required fields',
@@ -37,6 +37,17 @@ exports.register = async (req, res) => {
         success: false,
         message: 'Email is already registered',
       });
+    }
+
+    // Check if phone number exists (only if phone is provided)
+    if (phone) {
+      const phoneExists = await User.findOne({ phone });
+      if (phoneExists) {
+        return res.status(400).json({
+          success: false,
+          message: 'Phone number is already registered',
+        });
+      }
     }
 
     // Create user
@@ -80,12 +91,15 @@ exports.login = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide email and password',
+        message: 'Please provide email/phone and password',
       });
     }
 
-    // Check for user (with password field selected)
-    const user = await User.findOne({ email }).select('+password');
+    // Check for user by email OR phone (with password field selected)
+    // The email field could contain either an email or phone number
+    const user = await User.findOne({
+      $or: [{ email: email.toLowerCase() }, { phone: email }],
+    }).select('+password');
 
     if (!user) {
       return res.status(401).json({
@@ -103,6 +117,10 @@ exports.login = async (req, res) => {
         message: 'Invalid credentials',
       });
     }
+
+    // Update lastLogin timestamp
+    user.lastLogin = new Date();
+    await user.save({ validateBeforeSave: false });
 
     // Remove password from response
     user.password = undefined;
@@ -262,10 +280,10 @@ exports.changePassword = async (req, res) => {
       });
     }
 
-    if (newPassword.length < 6) {
+    if (newPassword.length < 8) {
       return res.status(400).json({
         success: false,
-        message: 'Password must be at least 6 characters',
+        message: 'Password must be at least 8 characters and contain 1 uppercase, 1 lowercase, 1 number, and 1 special character',
       });
     }
 
