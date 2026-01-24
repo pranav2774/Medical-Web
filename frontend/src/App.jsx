@@ -8,6 +8,8 @@ import StoreManagement from './pages/StoreManagement';
 import CustomerManagement from './pages/CustomerManagement';
 import UserProfile from './pages/UserProfile';
 import UserSettings from './pages/UserSettings';
+import MedicineCatalog from './pages/MedicineCatalog';
+import UserMedicineStore from './pages/UserMedicineStore';
 import { authService } from './utils/authService';
 
 const PrivateRoute = ({ children }) => {
@@ -18,14 +20,19 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<MedicineCatalog />} />
+        <Route path="/medicines" element={<MedicineCatalog />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+
+        {/* Private Routes */}
+        <Route path="/dashboard" element={<PrivateRoute><UserMedicineStore /></PrivateRoute>} />
+        <Route path="/store" element={<PrivateRoute><UserMedicineStore /></PrivateRoute>} />
         <Route path="/admin" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
         <Route path="/admin/store" element={<PrivateRoute><StoreManagement /></PrivateRoute>} />
         <Route path="/admin/customers" element={<PrivateRoute><CustomerManagement /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
         <Route path="/settings" element={<PrivateRoute><UserSettings /></PrivateRoute>} />
-        <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );
