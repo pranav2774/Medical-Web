@@ -11,6 +11,7 @@ import UserSettings from './pages/UserSettings';
 import MedicineCatalog from './pages/MedicineCatalog';
 import UserMedicineStore from './pages/UserMedicineStore';
 import VerifyEmail from './pages/VerifyEmail';
+import EnvIndicator from './components/EnvIndicator';
 import { authService } from './utils/authService';
 
 const PrivateRoute = ({ children }) => {
@@ -20,6 +21,7 @@ const PrivateRoute = ({ children }) => {
 const App = () => {
   return (
     <Router>
+      <EnvIndicator />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<MedicineCatalog />} />

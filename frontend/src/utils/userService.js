@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { authService } from './authService';
 
-const API_URL = 'http://localhost:5000/api/users';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = `${API_BASE.replace(/\/$/, '')}/users`;
 
 // Get all customers
 const getAllCustomers = async () => {

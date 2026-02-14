@@ -12,8 +12,15 @@ const app = express();
 
 // Middleware
 app.use(helmet()); // Security headers
+// Support multiple origins (e.g. "https://app.vercel.app,http://localhost:5173") for local testing when live
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',').map((o) => o.trim()).filter(Boolean)
+  : ['http://localhost:5173'];
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(null, allowedOrigins[0]);
+  },
   credentials: true,
 }));
 app.use(express.json({ limit: '50mb' }));
