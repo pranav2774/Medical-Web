@@ -36,4 +36,4 @@ pnpm-debug.log*
 coverage/
 .nyc_output/
 
-
+/docs
