@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { PASSWORD_REGEX } = require('../middleware/validateAuth');
 
 // Generate JWT Token
 const generateToken = (id, role) => {
@@ -13,7 +14,7 @@ const generateToken = (id, role) => {
 // @access  Public
 exports.register = async (req, res) => {
   try {
-    const { name, email, phone, password, passwordConfirm, role } = req.body;
+    const { name, email, phone, password, passwordConfirm } = req.body;
 
     // Validation
     if (!name || !email || !password || !passwordConfirm) {
@@ -50,13 +51,13 @@ exports.register = async (req, res) => {
       }
     }
 
-    // Create user
+    // Create user - role is always 'user'; admin can only be set in the database
     const user = await User.create({
       name,
       email,
       phone,
       password,
-      role: role || 'user',
+      role: 'user',
     });
 
     // Remove password from response
@@ -280,10 +281,10 @@ exports.changePassword = async (req, res) => {
       });
     }
 
-    if (newPassword.length < 8) {
+    if (!PASSWORD_REGEX.test(newPassword)) {
       return res.status(400).json({
         success: false,
-        message: 'Password must be at least 8 characters and contain 1 uppercase, 1 lowercase, 1 number, and 1 special character',
+        message: 'New password must contain at least 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 special character (@$!%*?&)',
       });
     }
 

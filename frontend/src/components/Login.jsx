@@ -24,7 +24,6 @@ const Login = () => {
     name: '',
     phone: '',
     passwordConfirm: '',
-    role: 'user',
   });
 
   const handleChange = (e) => {
@@ -129,18 +128,17 @@ const Login = () => {
           window.location.href = response.user.role === 'admin' ? '/admin' : '/dashboard';
         }, 1500);
       } else {
-        const response = await authService.register({
+        await authService.register({
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
           passwordConfirm: formData.passwordConfirm,
-          role: formData.role,
         });
 
         setSuccess('Registration successful! Redirecting...');
         setTimeout(() => {
-          window.location.href = formData.role === 'admin' ? '/admin' : '/dashboard';
+          window.location.href = '/dashboard';
         }, 1500);
       }
     } catch (err) {
@@ -158,7 +156,6 @@ const Login = () => {
       name: '',
       phone: '',
       passwordConfirm: '',
-      role: 'user',
     });
     setPasswordStrength({
       minLength: false,
@@ -260,22 +257,6 @@ const Login = () => {
                   maxLength="10"
                   className="form-input text-sm"
                 />
-              </div>
-            )}
-
-            {/* Sign up as Admin Checkbox - Only for Register */}
-            {!isLogin && (
-              <div className="p-3 bg-gray-50 rounded-lg flex items-center">
-                <input
-                  type="checkbox"
-                  id="signupAsAdmin"
-                  checked={formData.role === 'admin'}
-                  onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.checked ? 'admin' : 'user' }))}
-                  className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500 cursor-pointer"
-                />
-                <label htmlFor="signupAsAdmin" className="ml-2 text-xs sm:text-sm text-gray-700 cursor-pointer font-medium">
-                  Sign up as Admin
-                </label>
               </div>
             )}
 
