@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../utils/authService';
 import '../styles/globals.css';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -128,7 +129,7 @@ const Login = () => {
           window.location.href = response.user.role === 'admin' ? '/admin' : '/dashboard';
         }, 1500);
       } else {
-        await authService.register({
+        const response = await authService.register({
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
@@ -136,12 +137,23 @@ const Login = () => {
           passwordConfirm: formData.passwordConfirm,
         });
 
-        setSuccess('Registration successful! Redirecting...');
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 1500);
+        setSuccess(response.message || 'Check your email for the verification code.');
+        if (response.requiresVerification && response.email) {
+          setTimeout(() => {
+            navigate('/verify-email', { state: { email: response.email } });
+          }, 1500);
+        } else {
+          setTimeout(() => navigate('/login'), 1500);
+        }
       }
     } catch (err) {
+      if (err.requiresVerification && err.email) {
+        setError(err.message || 'Please verify your email first.');
+        setTimeout(() => {
+          navigate('/verify-email', { state: { email: err.email } });
+        }, 500);
+        return;
+      }
       setError(err.message || 'An error occurred. Please try again.');
     } finally {
       setLoading(false);

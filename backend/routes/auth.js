@@ -6,10 +6,12 @@ const {
   logout,
   updateProfile,
   updateSettings,
-  changePassword
+  changePassword,
+  verifyEmail,
+  resendVerification,
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
-const authLimiter = require('../middleware/rateLimitAuth');
+const { authLimiter, resendVerificationLimiter } = require('../middleware/rateLimitAuth');
 const { registerValidation, loginValidation, validate } = require('../middleware/validateAuth');
 
 const router = express.Router();
@@ -17,6 +19,8 @@ const router = express.Router();
 // Rate limit login and register to prevent brute force
 router.post('/register', authLimiter, registerValidation, validate, register);
 router.post('/login', authLimiter, loginValidation, validate, login);
+router.post('/verify-email', authLimiter, verifyEmail);
+router.post('/resend-verification', resendVerificationLimiter, resendVerification);
 router.get('/me', protect, getMe);
 router.get('/logout', protect, logout);
 router.put('/profile', protect, updateProfile);

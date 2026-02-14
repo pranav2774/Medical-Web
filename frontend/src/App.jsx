@@ -10,6 +10,7 @@ import UserProfile from './pages/UserProfile';
 import UserSettings from './pages/UserSettings';
 import MedicineCatalog from './pages/MedicineCatalog';
 import UserMedicineStore from './pages/UserMedicineStore';
+import VerifyEmail from './pages/VerifyEmail';
 import { authService } from './utils/authService';
 
 const PrivateRoute = ({ children }) => {
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/" element={<MedicineCatalog />} />
         <Route path="/medicines" element={<MedicineCatalog />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
 
         {/* Private Routes */}
         <Route path="/dashboard" element={<PrivateRoute><UserMedicineStore /></PrivateRoute>} />

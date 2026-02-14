@@ -4,10 +4,33 @@ export const authService = {
   register: async (userData) => {
     try {
       const response = await apiClient.post('/auth/register', userData);
+      // No token until email is verified
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  verifyEmail: async ({ email, otp }) => {
+    try {
+      const response = await apiClient.post('/auth/verify-email', { email, otp });
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  resendVerification: async ({ email }) => {
+    try {
+      const response = await apiClient.post('/auth/resend-verification', { email });
       return response.data;
     } catch (error) {
       throw error.response?.data || error;
@@ -23,7 +46,11 @@ export const authService = {
       }
       return response.data;
     } catch (error) {
-      throw error.response?.data || error;
+      const data = error.response?.data || error;
+      if (data.requiresVerification && data.email) {
+        throw { ...data, message: data.message || 'Please verify your email first.' };
+      }
+      throw data;
     }
   },
 
