@@ -100,6 +100,38 @@ const AdminDashboard = () => {
               >
                 User Management
               </Link>
+
+              {/* Expense Management */}
+              <div className="pt-2 mt-2 border-t border-gray-200">
+                <h4 className="text-xs font-semibold text-gray-600 px-4 py-2 uppercase">Expense Management</h4>
+                <Link
+                  to="/admin/expenses"
+                  className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/expenses')
+                    ? 'bg-primary-50 text-primary-600 font-semibold'
+                    : 'text-gray-700'
+                    }`}
+                >
+                  Expenses
+                </Link>
+                <Link
+                  to="/admin/analytics"
+                  className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/analytics')
+                    ? 'bg-primary-50 text-primary-600 font-semibold'
+                    : 'text-gray-700'
+                    }`}
+                >
+                  Analytics
+                </Link>
+                <Link
+                  to="/admin/budget"
+                  className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/budget')
+                    ? 'bg-primary-50 text-primary-600 font-semibold'
+                    : 'text-gray-700'
+                    }`}
+                >
+                  Budget Settings
+                </Link>
+              </div>
             </nav>
           </div>
         </aside>

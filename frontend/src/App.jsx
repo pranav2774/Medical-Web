@@ -11,6 +11,9 @@ import UserSettings from './pages/UserSettings';
 import MedicineCatalog from './pages/MedicineCatalog';
 import UserMedicineStore from './pages/UserMedicineStore';
 import VerifyEmail from './pages/VerifyEmail';
+import AdminExpenses from './pages/AdminExpenses';
+import BudgetSettings from './pages/BudgetSettings';
+import ExpenseAnalytics from './pages/ExpenseAnalytics';
 import EnvIndicator from './components/EnvIndicator';
 import { authService } from './utils/authService';
 
@@ -35,6 +38,9 @@ const App = () => {
         <Route path="/admin" element={<PrivateRoute><AdminDashboard /></PrivateRoute>} />
         <Route path="/admin/store" element={<PrivateRoute><StoreManagement /></PrivateRoute>} />
         <Route path="/admin/customers" element={<PrivateRoute><CustomerManagement /></PrivateRoute>} />
+        <Route path="/admin/expenses" element={<PrivateRoute><AdminExpenses /></PrivateRoute>} />
+        <Route path="/admin/analytics" element={<PrivateRoute><ExpenseAnalytics /></PrivateRoute>} />
+        <Route path="/admin/budget" element={<PrivateRoute><BudgetSettings /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
         <Route path="/settings" element={<PrivateRoute><UserSettings /></PrivateRoute>} />
       </Routes>
