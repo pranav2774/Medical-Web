@@ -19,7 +19,7 @@ async function sendVerificationEmail(to, otp, name = 'User') {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: FROM_EMAIL,
+      from: 'MORYA MEDICAL <admin@moryamedical.shop>',
       to: [to],
       subject: 'Verify your email - Morya Medical',
       html: `
