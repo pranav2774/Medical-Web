@@ -101,6 +101,9 @@ export const updateExpense = async (id, expenseData) => {
     if (expenseData.description !== undefined) {
       formData.append('description', expenseData.description);
     }
+    if (expenseData.medicineId !== undefined) {
+      formData.append('medicineId', expenseData.medicineId);
+    }
     if (expenseData.isRecurring !== undefined) {
       formData.append('isRecurring', expenseData.isRecurring);
       formData.append('recurringType', expenseData.recurringType);

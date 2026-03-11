@@ -43,7 +43,7 @@ exports.getMonthlyTrend = async (req, res) => {
       return {
         month: date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
         monthYear: `${item._id.year}-${String(item._id.month).padStart(2, '0')}`,
-        totalSpent: item.totalSpent,
+        total: item.totalSpent,
         count: item.count,
         avgCost: Math.round(item.avgCost),
       };
@@ -104,15 +104,15 @@ exports.getCategoryBreakdown = async (req, res) => {
     // Format data for pie chart
     const formattedData = categoryData.map(item => ({
       category: item._id || 'Unknown',
-      amount: item.totalSpent,
+      total: item.totalSpent,
       count: item.count,
       percentage: 0, // Will calculate below
     }));
 
     // Calculate percentages
-    const totalSpent = formattedData.reduce((sum, item) => sum + item.amount, 0);
+    const totalSpent = formattedData.reduce((sum, item) => sum + item.total, 0);
     formattedData.forEach(item => {
-      item.percentage = totalSpent > 0 ? Math.round((item.amount / totalSpent) * 100) : 0;
+      item.percentage = totalSpent > 0 ? Math.round((item.total / totalSpent) * 100) : 0;
     });
 
     res.status(200).json({
@@ -240,9 +240,9 @@ exports.getKPIData = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        currentMonthSpending: Math.round(currentTotal),
+        totalExpensesCurrentMonth: Math.round(currentTotal),
         previousMonthSpending: Math.round(prevTotal),
-        monthlyChangePercent,
+        monthOverMonthChange: monthlyChangePercent,
         changeDirection: monthlyChangePercent >= 0 ? 'up' : 'down',
         expenseCount: currentMonthSpending[0]?.count || 0,
         topVendor: {
@@ -251,7 +251,7 @@ exports.getKPIData = async (req, res) => {
           count: topVendor[0]?.count || 0,
         },
         topCategory: {
-          name: topCategory[0]?._id || 'N/A',
+          category: topCategory[0]?._id || 'N/A',
           amount: Math.round(topCategory[0]?.totalSpent || 0),
         },
         budgetStatus: {

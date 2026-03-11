@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { medicineService } from '../utils/medicineService';
 
 export default function EditExpenseModal({ expense, onClose, onSubmit }) {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
     date: expense.date.split('T')[0],
     vendor: expense.vendor,
     category: expense.category,
+    medicineId: expense.medicineId?._id || expense.medicineId || '',
     description: expense.description || '',
     receipt: null,
     removeReceipt: false,
@@ -15,6 +17,9 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
     recurringType: expense.recurringType || 'none',
     recurringEndDate: expense.recurringEndDate ? expense.recurringEndDate.split('T')[0] : '',
   });
+
+  const [medicines, setMedicines] = useState([]);
+  const [loadingMedicines, setLoadingMedicines] = useState(false);
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -26,6 +31,26 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
     { value: 'monthly', label: 'Monthly' },
     { value: 'yearly', label: 'Yearly' },
   ];
+
+  useEffect(() => {
+    if (formData.category === 'Medicine') {
+      const fetchMedicines = async () => {
+        setLoadingMedicines(true);
+        try {
+          const response = await medicineService.getAllMedicines({ limit: 1000 });
+          setMedicines(response.data || []);
+        } catch (error) {
+          console.error('Failed to fetch medicines:', error);
+        } finally {
+          setLoadingMedicines(false);
+        }
+      };
+      
+      if (medicines.length === 0) {
+        fetchMedicines();
+      }
+    }
+  }, [formData.category]);
 
   // Validate form
   const validateForm = () => {
@@ -45,6 +70,8 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
     }
     if (!formData.category) {
       newErrors.category = 'Category is required';
+    } else if (formData.category === 'Medicine' && !formData.medicineId) {
+      newErrors.medicineId = 'Please select a medicine';
     }
     if (formData.isRecurring && formData.recurringType === 'none') {
       newErrors.recurringType = 'Please select a recurring type';
@@ -103,6 +130,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
         date: formData.date,
         vendor: formData.vendor.trim(),
         category: formData.category,
+        medicineId: formData.category === 'Medicine' ? formData.medicineId : '',
         description: formData.description.trim() || undefined,
         receipt: formData.receipt,
         removeReceipt: formData.removeReceipt,
@@ -154,7 +182,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
                 value={formData.date}
                 onChange={handleInputChange}
                 max={new Date().toISOString().split('T')[0]}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
               {errors.date && <p className="text-red-500 text-sm mt-1">{errors.date}</p>}
             </div>
@@ -171,7 +199,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
                 onChange={handleInputChange}
                 placeholder="Enter vendor name..."
                 maxLength={200}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
               {errors.vendor && <p className="text-red-500 text-sm mt-1">{errors.vendor}</p>}
             </div>
@@ -185,7 +213,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
                 <option value="">Select category...</option>
                 {categories.map(cat => (
@@ -194,6 +222,30 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
               </select>
               {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category}</p>}
             </div>
+
+            {/* Select Medicine (Conditionally Rendered) */}
+            {formData.category === 'Medicine' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Select Medicine *
+                </label>
+                <select
+                  name="medicineId"
+                  value={formData.medicineId}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  disabled={loadingMedicines}
+                >
+                  <option value="">{loadingMedicines ? 'Loading medicines...' : 'Select a medicine...'}</option>
+                  {medicines.map(med => (
+                    <option key={med._id} value={med._id}>
+                      {med.name} {med.manufacturer ? `(${med.manufacturer})` : ''} - Stock: {med.quantity}
+                    </option>
+                  ))}
+                </select>
+                {errors.medicineId && <p className="text-red-500 text-sm mt-1">{errors.medicineId}</p>}
+              </div>
+            )}
 
             {/* Quantity */}
             <div>
@@ -208,7 +260,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
                 placeholder="0"
                 step="0.01"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
               {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity}</p>}
             </div>
@@ -226,7 +278,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
                 placeholder="0.00"
                 step="0.01"
                 min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
               {errors.unitCost && <p className="text-red-500 text-sm mt-1">{errors.unitCost}</p>}
             </div>
@@ -252,7 +304,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
                 onChange={handleInputChange}
                 placeholder="Add any additional details..."
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
 
@@ -286,7 +338,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
               {/* File Upload */}
               {formData.removeReceipt || !expense.receiptUrl ? (
                 <div>
-                  <div className="flex items-center justify-center px-4 py-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition">
+                  <div className="flex items-center justify-center px-4 py-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-400 transition">
                     <label className="cursor-pointer w-full">
                       <div className="text-center">
                         <p className="text-sm text-gray-600">
@@ -321,7 +373,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
                 <button
                   type="button"
                   onClick={() => setFormData(prev => ({ ...prev, removeReceipt: false }))}
-                  className="text-sm text-blue-600 hover:underline mt-2"
+                  className="text-sm text-primary-600 hover:underline mt-2"
                 >
                   Keep Current Receipt
                 </button>
@@ -336,7 +388,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
                   name="isRecurring"
                   checked={formData.isRecurring}
                   onChange={handleInputChange}
-                  className="w-4 h-4 text-blue-600 rounded"
+                  className="w-4 h-4 text-primary-600 rounded"
                 />
                 <span className="text-sm font-medium text-gray-700">This is a recurring expense</span>
               </label>
@@ -353,7 +405,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
                     name="recurringType"
                     value={formData.recurringType}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
                     {recurringTypes.map(type => (
                       <option key={type.value} value={type.value}>{type.label}</option>
@@ -374,7 +426,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
                     value={formData.recurringEndDate}
                     onChange={handleInputChange}
                     min={formData.date}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   />
                 </div>
               </>
@@ -394,7 +446,7 @@ export default function EditExpenseModal({ expense, onClose, onSubmit }) {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:opacity-50 transition"
+              className="px-4 py-2 btn-primary rounded-lg font-medium disabled:opacity-50 transition"
             >
               {loading ? 'Updating...' : 'Update Expense'}
             </button>

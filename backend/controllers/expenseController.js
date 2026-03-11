@@ -134,10 +134,14 @@ exports.createExpense = async (req, res) => {
       recurringEndDate,
     } = req.body;
 
+    // Calculate total cost before creation to avoid validation errors
+    const calculatedTotalCost = quantity * unitCost;
+
     // Create expense object
     const expenseData = {
       quantity,
       unitCost,
+      totalCost: calculatedTotalCost,
       date,
       vendor,
       category,
@@ -151,7 +155,7 @@ exports.createExpense = async (req, res) => {
     // Handle receipt file upload if provided
     if (req.file) {
       const uploadResult = await uploadReceipt(req.file.buffer, req.file.originalname);
-      
+
       if (!uploadResult.success) {
         return res.status(400).json({
           success: false,
@@ -178,10 +182,18 @@ exports.createExpense = async (req, res) => {
     // Create the expense
     const expense = await Expense.create(expenseData);
 
+    // Update medicine stock if medicine is referenced and category is Medicine
+    if (medicineId && category === 'Medicine') {
+      await Medicine.findByIdAndUpdate(
+        medicineId,
+        { $inc: { quantity: quantity } }
+      );
+    }
+
     // Update budget current spending
     const monthYear = new Date(date).toISOString().slice(0, 7); // YYYY-MM format
-    const expense_total = quantity * unitCost;
-    
+    const expense_total = calculatedTotalCost;
+
     await ExpenseBudget.findOneAndUpdate(
       { category, monthYear },
       { $inc: { currentSpending: expense_total } },
@@ -236,7 +248,10 @@ exports.updateExpense = async (req, res) => {
 
     // Calculate old total for budget update
     const oldMonthYear = expense.date.toISOString().slice(0, 7);
-    const oldTotal = expense.quantity * expense.unitCost;
+    const oldTotal = expense.totalCost || (expense.quantity * expense.unitCost);
+    const oldQuantity = expense.quantity;
+    const oldMedicineId = expense.medicineId;
+    const oldCategory = expense.category;
 
     // Handle receipt file replacement if new file is provided
     if (req.file) {
@@ -251,7 +266,7 @@ exports.updateExpense = async (req, res) => {
 
       // Upload new receipt
       const uploadResult = await uploadReceipt(req.file.buffer, req.file.originalname);
-      
+
       if (!uploadResult.success) {
         return res.status(400).json({
           success: false,
@@ -274,11 +289,37 @@ exports.updateExpense = async (req, res) => {
     if (recurringType !== undefined) expense.recurringType = recurringType;
     if (recurringEndDate !== undefined) expense.recurringEndDate = recurringEndDate;
 
+    if (req.body.medicineId !== undefined) {
+      // Allow removing the medicine link
+      expense.medicineId = req.body.medicineId === '' ? null : req.body.medicineId;
+    }
+
+    // Recalculate total cost
+    if (expense.quantity && expense.unitCost) {
+      expense.totalCost = expense.quantity * expense.unitCost;
+    }
+
     await expense.save();
+
+    // Update medicine stock if category is Medicine and medicine ID is present
+    if (expense.category === 'Medicine' && expense.medicineId) {
+       // If medicine ID changed, subtract from old, add to new
+       if (oldMedicineId && oldMedicineId.toString() !== expense.medicineId.toString() && oldCategory === 'Medicine') {
+         await Medicine.findByIdAndUpdate(oldMedicineId, { $inc: { quantity: -oldQuantity } });
+         await Medicine.findByIdAndUpdate(expense.medicineId, { $inc: { quantity: expense.quantity } });
+       } else {
+         // Same medicine or new medicine, just adjust the difference
+         const qtyDifference = expense.quantity - (oldMedicineId ? oldQuantity : 0);
+         await Medicine.findByIdAndUpdate(expense.medicineId, { $inc: { quantity: qtyDifference } });
+       }
+    } else if (oldCategory === 'Medicine' && oldMedicineId && (expense.category !== 'Medicine' || !expense.medicineId)) {
+       // It used to be a medicine expense, but now it's not (or medicine was removed). Revert the old stock.
+       await Medicine.findByIdAndUpdate(oldMedicineId, { $inc: { quantity: -oldQuantity } });
+    }
 
     // Update budget if amount or date changed
     const newMonthYear = expense.date.toISOString().slice(0, 7);
-    const newTotal = expense.quantity * expense.unitCost;
+    const newTotal = expense.totalCost;
     const totalChange = newTotal - oldTotal;
 
     if (oldMonthYear === newMonthYear) {
@@ -345,9 +386,17 @@ exports.deleteExpense = async (req, res) => {
       }
     }
 
+    // Revert medicine stock if applicable
+    if (expense.category === 'Medicine' && expense.medicineId) {
+       await Medicine.findByIdAndUpdate(
+         expense.medicineId,
+         { $inc: { quantity: -expense.quantity } }
+       );
+    }
+
     // Update budget - subtract the expense amount
     const monthYear = expense.date.toISOString().slice(0, 7);
-    const expenseTotal = expense.quantity * expense.unitCost;
+    const expenseTotal = expense.totalCost || (expense.quantity * expense.unitCost);
 
     await ExpenseBudget.findOneAndUpdate(
       { category: expense.category, monthYear },

@@ -36,8 +36,8 @@ const expenseSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, 'Please provide category'],
-      enum: ['medicine-purchase', 'storage', 'utilities', 'labor', 'miscellaneous'],
-      default: 'medicine-purchase',
+      enum: ['Medicine', 'Medical Supplies', 'Equipment', 'Repairs', 'Other'],
+      default: 'Medicine',
     },
     receiptUrl: {
       type: String,

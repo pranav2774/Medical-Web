@@ -27,7 +27,7 @@ const expenseValidation = [
     .trim()
     .notEmpty()
     .withMessage('Category is required')
-    .isIn(['medicine-purchase', 'storage', 'utilities', 'labor', 'miscellaneous'])
+    .isIn(['Medicine', 'Medical Supplies', 'Equipment', 'Repairs', 'Other'])
     .withMessage('Invalid category'),
   body('description')
     .optional({ checkFalsy: true })
@@ -53,7 +53,7 @@ const budgetValidation = [
     .trim()
     .notEmpty()
     .withMessage('Category is required')
-    .isIn(['medicine-purchase', 'storage', 'utilities', 'labor', 'miscellaneous', 'overall'])
+    .isIn(['Medicine', 'Medical Supplies', 'Equipment', 'Repairs', 'Other', 'overall'])
     .withMessage('Invalid category'),
   body('monthYear')
     .trim()

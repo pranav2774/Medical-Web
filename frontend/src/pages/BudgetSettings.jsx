@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import DeleteConfirmDialog from '../components/DeleteConfirmDialog';
+import { Link } from 'react-router-dom';
 import * as expenseService from '../utils/expenseService';
 
 export default function BudgetSettings() {
@@ -37,7 +38,7 @@ export default function BudgetSettings() {
       setError(null);
       const monthYear = formData.monthYear || getCurrentMonth();
       const result = await expenseService.getBudgetsByMonth(monthYear);
-      setBudgets(result.budgets || []);
+      setBudgets(result.data || []);
     } catch (err) {
       setError(err.message || 'Failed to fetch budgets');
       toast.error('Failed to fetch budgets');
@@ -148,9 +149,9 @@ export default function BudgetSettings() {
 
   // Format currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
     }).format(amount);
   };
 
@@ -175,7 +176,18 @@ export default function BudgetSettings() {
   };
 
   return (
-    <div className="p-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 bg-gradient-to-br from-primary-50 to-white min-h-screen">
+      {/* Back Button */}
+      <Link
+        to="/admin"
+        className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 mb-6 text-sm font-medium"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Dashboard
+      </Link>
+
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Budget Settings</h1>
@@ -185,7 +197,7 @@ export default function BudgetSettings() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Budget Form */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow p-6 sticky top-6">
+          <div className="card p-6 sticky top-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               {isEditing ? 'Edit Budget' : 'Set Budget'}
             </h2>
@@ -200,7 +212,7 @@ export default function BudgetSettings() {
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
                   <option value="">Select category...</option>
                   {categories.map(cat => (
@@ -219,7 +231,7 @@ export default function BudgetSettings() {
                   name="monthYear"
                   value={formData.monthYear}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
 
@@ -236,7 +248,7 @@ export default function BudgetSettings() {
                   placeholder="0.00"
                   step="0.01"
                   min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
 
@@ -269,7 +281,7 @@ export default function BudgetSettings() {
               <div className="space-y-2">
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
+                  className="w-full btn-primary py-2 px-4 transition"
                 >
                   {isEditing ? 'Update Budget' : 'Set Budget'}
                 </button>
@@ -291,7 +303,7 @@ export default function BudgetSettings() {
         <div className="lg:col-span-2">
           {loading && (
             <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
               <p className="text-gray-600 mt-4">Loading budgets...</p>
             </div>
           )}
@@ -315,7 +327,7 @@ export default function BudgetSettings() {
               </div>
 
               {budgets.length === 0 ? (
-                <div className="bg-white rounded-lg shadow p-8 text-center">
+                <div className="card p-8 text-center">
                   <p className="text-gray-500 text-lg">No budgets set for this month</p>
                   <p className="text-gray-400 text-sm mt-1">Add a budget to get started</p>
                 </div>
@@ -326,7 +338,7 @@ export default function BudgetSettings() {
                     const percentage = (budget.currentSpending / budget.budgetAmount) * 100;
 
                     return (
-                      <div key={budget._id} className="bg-white rounded-lg shadow p-6">
+                      <div key={budget._id} className="card p-6">
                         <div className="flex justify-between items-start mb-4">
                           <div>
                             <h3 className="text-lg font-semibold text-gray-900">{budget.category}</h3>
@@ -362,8 +374,8 @@ export default function BudgetSettings() {
                         </div>
 
                         {/* Remaining Budget */}
-                        <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-                          <p className="text-sm text-blue-700">
+                        <div className="mb-4 p-3 bg-primary-50 rounded-lg">
+                          <p className="text-sm text-primary-700">
                             <span className="font-medium">Remaining:</span> {formatCurrency(Math.max(0, budget.budgetAmount - budget.currentSpending))}
                           </p>
                         </div>
@@ -372,7 +384,7 @@ export default function BudgetSettings() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleEditBudget(budget)}
-                            className="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium py-2 px-4 rounded-lg transition text-sm"
+                            className="flex-1 bg-primary-100 hover:bg-primary-200 text-primary-700 font-medium py-2 px-4 rounded-lg transition text-sm"
                           >
                             Edit
                           </button>

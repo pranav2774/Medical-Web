@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import AddExpenseModal from '../components/AddExpenseModal';
 import EditExpenseModal from '../components/EditExpenseModal';
 import DeleteConfirmDialog from '../components/DeleteConfirmDialog';
+import { Link } from 'react-router-dom';
 import * as expenseService from '../utils/expenseService';
 
 export default function AdminExpenses() {
@@ -46,7 +47,7 @@ export default function AdminExpenses() {
       };
       
       const result = await expenseService.getAllExpenses(params);
-      setExpenses(result.expenses || []);
+      setExpenses(result.data || []);
     } catch (err) {
       setError(err.message || 'Failed to fetch expenses');
       toast.error('Failed to fetch expenses');
@@ -125,14 +126,25 @@ export default function AdminExpenses() {
 
   // Format currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
     }).format(amount);
   };
 
   return (
-    <div className="p-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 bg-gradient-to-br from-primary-50 to-white min-h-screen">
+      {/* Back Button */}
+      <Link
+        to="/admin"
+        className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 mb-6 text-sm font-medium"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Dashboard
+      </Link>
+
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Expense Management</h1>
@@ -143,14 +155,14 @@ export default function AdminExpenses() {
       <div className="mb-6">
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
+          className="btn-primary py-2 px-4 transition"
         >
           + Add Expense
         </button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <div className="card p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Filters</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Category Filter */}
@@ -160,7 +172,7 @@ export default function AdminExpenses() {
               name="category"
               value={filters.category}
               onChange={handleFilterChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="">All Categories</option>
               {categories.map(cat => (
@@ -177,7 +189,7 @@ export default function AdminExpenses() {
               name="dateFrom"
               value={filters.dateFrom}
               onChange={handleFilterChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
 
@@ -189,7 +201,7 @@ export default function AdminExpenses() {
               name="dateTo"
               value={filters.dateTo}
               onChange={handleFilterChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
 
@@ -202,7 +214,7 @@ export default function AdminExpenses() {
               value={filters.searchVendor}
               onChange={handleFilterChange}
               placeholder="Search vendor..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -219,7 +231,7 @@ export default function AdminExpenses() {
       {/* Loading State */}
       {loading && (
         <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
           <p className="text-gray-600 mt-4">Loading expenses...</p>
         </div>
       )}
@@ -233,7 +245,7 @@ export default function AdminExpenses() {
 
       {/* Expenses Table */}
       {!loading && !error && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="card overflow-hidden">
           {expenses.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">No expenses found</p>
@@ -264,7 +276,7 @@ export default function AdminExpenses() {
                         {expense.vendor}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                        <span className="px-2 py-1 text-xs font-medium bg-primary-100 text-primary-800 rounded-full">
                           {expense.category}
                         </span>
                       </td>
@@ -283,7 +295,7 @@ export default function AdminExpenses() {
                             href={expense.receiptUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
+                            className="text-primary-600 hover:underline"
                           >
                             View
                           </a>
@@ -297,7 +309,7 @@ export default function AdminExpenses() {
                             setSelectedExpense(expense);
                             setShowEditModal(true);
                           }}
-                          className="text-blue-600 hover:text-blue-900 font-medium"
+                          className="text-primary-600 hover:text-primary-900 font-medium"
                         >
                           Edit
                         </button>

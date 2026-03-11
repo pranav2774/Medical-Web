@@ -5,7 +5,7 @@ const expenseBudgetSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, 'Please provide category'],
-      enum: ['medicine-purchase', 'storage', 'utilities', 'labor', 'miscellaneous', 'overall'],
+      enum: ['Medicine', 'Medical Supplies', 'Equipment', 'Repairs', 'Other'],
     },
     monthYear: {
       type: String, // Format: "2026-03" for March 2026

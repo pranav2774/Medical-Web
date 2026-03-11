@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 import * as expenseService from '../utils/expenseService';
 
 export default function ExpenseAnalytics() {
@@ -53,9 +54,9 @@ export default function ExpenseAnalytics() {
 
   // Format currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
     }).format(amount);
   };
 
@@ -78,7 +79,18 @@ export default function ExpenseAnalytics() {
   };
 
   return (
-    <div className="p-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 bg-gradient-to-br from-primary-50 to-white min-h-screen">
+      {/* Back Button */}
+      <Link
+        to="/admin"
+        className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 mb-6 text-sm font-medium"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Dashboard
+      </Link>
+
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Expense Analytics</h1>
@@ -86,7 +98,7 @@ export default function ExpenseAnalytics() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className="card p-4 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Month</label>
@@ -94,7 +106,7 @@ export default function ExpenseAnalytics() {
               type="month"
               value={filters.month}
               onChange={(e) => setFilters({ ...filters, month: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
           </div>
 
@@ -103,7 +115,7 @@ export default function ExpenseAnalytics() {
             <select
               value={filters.months}
               onChange={(e) => setFilters({ ...filters, months: parseInt(e.target.value) })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value={3}>Last 3 months</option>
               <option value={6}>Last 6 months</option>
@@ -120,7 +132,7 @@ export default function ExpenseAnalytics() {
             </button>
             <button
               onClick={fetchAnalytics}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition"
+              className="flex-1 btn-primary py-2 px-4 transition"
             >
               Refresh
             </button>
@@ -131,7 +143,7 @@ export default function ExpenseAnalytics() {
       {/* Loading State */}
       {loading && (
         <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
           <p className="text-gray-600 mt-4">Loading analytics...</p>
         </div>
       )}
@@ -150,7 +162,7 @@ export default function ExpenseAnalytics() {
           {kpiData && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {/* Total Expenses */}
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="card p-6 border-l-4 border-primary-500">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <p className="text-gray-500 text-sm font-medium">Total Expenses</p>
@@ -158,7 +170,7 @@ export default function ExpenseAnalytics() {
                       {formatCurrency(kpiData.totalExpensesCurrentMonth || 0)}
                     </h3>
                   </div>
-                  <div className="bg-blue-100 p-3 rounded-lg">
+                  <div className="bg-primary-100 p-3 rounded-lg">
                     <span className="text-xl">💰</span>
                   </div>
                 </div>
@@ -171,7 +183,7 @@ export default function ExpenseAnalytics() {
               </div>
 
               {/* Top Vendor */}
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="card p-6 border-l-4 border-purple-500">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <p className="text-gray-500 text-sm font-medium">Top Vendor</p>
@@ -190,7 +202,7 @@ export default function ExpenseAnalytics() {
               </div>
 
               {/* Top Category */}
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="card p-6 border-l-4 border-green-500">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <p className="text-gray-500 text-sm font-medium">Top Category</p>
@@ -209,7 +221,7 @@ export default function ExpenseAnalytics() {
               </div>
 
               {/* Budget Status */}
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="card p-6 border-l-4 border-orange-500">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <p className="text-gray-500 text-sm font-medium">Budget Status</p>
@@ -232,7 +244,7 @@ export default function ExpenseAnalytics() {
           {/* Charts Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Monthly Trend */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="card p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Monthly Trend</h2>
               {monthlyTrend.length > 0 ? (
                 <div className="space-y-2">
@@ -241,7 +253,7 @@ export default function ExpenseAnalytics() {
                       <div className="w-24 text-sm text-gray-600">{item.month}</div>
                       <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-blue-600 h-full transition-all"
+                          className="bg-primary-600 h-full transition-all"
                           style={{ width: `${(item.total / Math.max(...monthlyTrend.map(m => m.total))) * 100}%` }}
                         ></div>
                       </div>
@@ -257,13 +269,13 @@ export default function ExpenseAnalytics() {
             </div>
 
             {/* Category Breakdown */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="card p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Category Breakdown</h2>
               {categoryBreakdown.length > 0 ? (
                 <div className="space-y-3">
                   {categoryBreakdown.map((item, index) => {
                     const colors = [
-                      'bg-blue-500',
+                      'bg-primary-500',
                       'bg-purple-500',
                       'bg-pink-500',
                       'bg-green-500',
@@ -292,7 +304,7 @@ export default function ExpenseAnalytics() {
             </div>
 
             {/* Budget vs Actual */}
-            <div className="bg-white rounded-lg shadow p-6 lg:col-span-2">
+            <div className="card p-6 lg:col-span-2">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Budget vs Actual Spending</h2>
               {budgetVsActual.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
