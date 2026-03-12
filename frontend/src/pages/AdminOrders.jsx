@@ -9,7 +9,6 @@ const AdminOrders = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
@@ -108,51 +107,18 @@ const AdminOrders = () => {
                 </div>
             </nav>
 
-            <div className="flex">
-                {/* Sidebar */}
-                <aside className={`fixed md:static w-64 bg-white shadow-sm min-h-[calc(100vh-64px)] z-40 transform transition-transform duration-300 ${
-                    sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-                }`}>
-                    <div className="p-4 sm:p-6 space-y-4">
-                        <h3 className="text-sm font-semibold text-gray-500 uppercase">Menu</h3>
-                        <nav className="space-y-2">
-                            <Link
-                                to="/admin"
-                                className="block px-4 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition"
-                            >
-                                Dashboard
-                            </Link>
-                            <Link
-                                to="/admin/store"
-                                className="block px-4 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition"
-                            >
-                                Medicine Catalog
-                            </Link>
-                            <Link
-                                to="/admin/customers"
-                                className="block px-4 py-2 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition"
-                            >
-                                Customers
-                            </Link>
-                            <Link
-                                to="/admin/orders"
-                                className="block px-4 py-2 rounded-lg text-sm bg-primary-50 text-primary-600 font-semibold transition"
-                            >
-                                Pickup Orders
-                            </Link>
-                        </nav>
-                    </div>
-                </aside>
-
-                {sidebarOpen && (
-                    <div
-                        className="fixed inset-0 bg-black bg-opacity-50 md:hidden z-30"
-                        onClick={() => setSidebarOpen(false)}
-                    />
-                )}
-
-                {/* Main Content */}
-                <main className="flex-1 p-4 sm:p-8 w-full max-w-7xl mx-auto overflow-x-hidden">
+            {/* Main Content */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                {/* Back Button */}
+                <Link
+                    to="/admin"
+                    className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 mb-4 text-sm font-medium"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Dashboard
+                </Link>
                     <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
                             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Pickup Orders</h1>
@@ -265,7 +231,6 @@ const AdminOrders = () => {
                         </div>
                     )}
                 </main>
-            </div>
         </div>
     );
 };

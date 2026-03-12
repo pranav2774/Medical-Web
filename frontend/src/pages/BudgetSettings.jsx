@@ -194,18 +194,18 @@ export default function BudgetSettings() {
         <p className="text-gray-600">Configure monthly budgets and spending alerts</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Budget Form */}
         <div className="lg:col-span-1">
-          <div className="card p-6 sticky top-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              {isEditing ? 'Edit Budget' : 'Set Budget'}
+          <div className="card p-6 bg-white rounded-2xl shadow-sm border border-gray-100 sticky top-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-6">
+              {isEditing ? 'Edit Budget' : 'Set Budget Allocation'}
             </h2>
 
-            <form onSubmit={handleSetBudget}>
+            <form onSubmit={handleSetBudget} className="space-y-5">
               {/* Category */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                   Category *
                 </label>
                 <select
@@ -327,9 +327,12 @@ export default function BudgetSettings() {
               </div>
 
               {budgets.length === 0 ? (
-                <div className="card p-8 text-center">
-                  <p className="text-gray-500 text-lg">No budgets set for this month</p>
-                  <p className="text-gray-400 text-sm mt-1">Add a budget to get started</p>
+                <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-12 text-center">
+                  <div className="mx-auto w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                  </div>
+                  <p className="text-gray-800 font-semibold text-lg">No budget allocated for this month</p>
+                  <p className="text-gray-500 text-sm mt-1">Use the panel on the left to set category budgets.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -338,15 +341,24 @@ export default function BudgetSettings() {
                     const percentage = (budget.currentSpending / budget.budgetAmount) * 100;
 
                     return (
-                      <div key={budget._id} className="card p-6">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-900">{budget.category}</h3>
-                            <p className="text-sm text-gray-600">
-                              Alert at {budget.alertThreshold}%
-                            </p>
+                      <div key={budget._id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 transition hover:shadow-md">
+                        <div className="flex justify-between items-start mb-6">
+                          <div className="flex items-center gap-4">
+                            <div className={`p-3 rounded-xl ${
+                              status === 'EXCEEDED' ? 'bg-red-50 text-red-600' :
+                              status === 'WARNING' ? 'bg-yellow-50 text-yellow-600' :
+                              'bg-green-50 text-green-600'
+                            }`}>
+                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-bold text-gray-900">{budget.category}</h3>
+                              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mt-1">
+                                Alert at {budget.alertThreshold}% usage
+                              </p>
+                            </div>
                           </div>
-                          <span className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(status)}`}>
+                          <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full ${getStatusColor(status)}`}>
                             {status}
                           </span>
                         </div>

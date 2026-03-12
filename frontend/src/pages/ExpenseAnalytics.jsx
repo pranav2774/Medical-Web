@@ -2,6 +2,11 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import * as expenseService from '../utils/expenseService';
+import {
+  PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from 'recharts';
+
+const COLORS = ['#818cf8', '#a78bfa', '#f472b6', '#34d399', '#fbbf24', '#f87171', '#60a5fa'];
 
 export default function ExpenseAnalytics() {
   const [loading, setLoading] = useState(true);
@@ -244,62 +249,63 @@ export default function ExpenseAnalytics() {
           {/* Charts Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Monthly Trend */}
-            <div className="card p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Monthly Trend</h2>
+            <div className="card p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+              <h2 className="text-lg font-bold text-gray-800 mb-6">Monthly Trend (Last {filters.months} Months)</h2>
               {monthlyTrend.length > 0 ? (
-                <div className="space-y-2">
-                  {monthlyTrend.map((item, index) => (
-                    <div key={index} className="flex items-center gap-4">
-                      <div className="w-24 text-sm text-gray-600">{item.month}</div>
-                      <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
-                        <div
-                          className="bg-primary-600 h-full transition-all"
-                          style={{ width: `${(item.total / Math.max(...monthlyTrend.map(m => m.total))) * 100}%` }}
-                        ></div>
-                      </div>
-                      <div className="text-sm font-semibold text-gray-900 w-24 text-right">
-                        {formatCurrency(item.total)}
-                      </div>
-                    </div>
-                  ))}
+                <div className="h-[300px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={monthlyTrend}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                      <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} dy={10} />
+                      <YAxis axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} tickFormatter={(value) => `₹${value}`} />
+                      <Tooltip
+                        cursor={{fill: '#f9fafb'}}
+                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                        formatter={(value) => [`₹${value}`, 'Total']}
+                      />
+                      <Bar dataKey="total" fill="#818cf8" radius={[4, 4, 0, 0]} maxBarSize={50} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               ) : (
-                <p className="text-gray-500">No data available</p>
+                <p className="text-gray-500">No data available for the selected period.</p>
               )}
             </div>
 
             {/* Category Breakdown */}
-            <div className="card p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Category Breakdown</h2>
+            <div className="card p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+              <h2 className="text-lg font-bold text-gray-800 mb-6">Category Breakdown</h2>
               {categoryBreakdown.length > 0 ? (
-                <div className="space-y-3">
-                  {categoryBreakdown.map((item, index) => {
-                    const colors = [
-                      'bg-primary-500',
-                      'bg-purple-500',
-                      'bg-pink-500',
-                      'bg-green-500',
-                      'bg-yellow-500',
-                    ];
-                    return (
-                      <div key={index}>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-sm font-medium text-gray-700">{item.category}</span>
-                          <span className="text-sm text-gray-600">{formatPercent(item.percentage)}</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div
-                            className={`h-2 rounded-full ${colors[index % colors.length]}`}
-                            style={{ width: `${item.percentage || 0}%` }}
-                          ></div>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-1">{formatCurrency(item.total)}</p>
-                      </div>
-                    );
-                  })}
-                </div>
+                 <div className="h-[300px] w-full flex flex-col items-center justify-center">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={categoryBreakdown}
+                          cx="50%"
+                          cy="45%"
+                          innerRadius={60}
+                          outerRadius={100}
+                          paddingAngle={5}
+                          dataKey="total"
+                          nameKey="category"
+                        >
+                          {categoryBreakdown.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip 
+                            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                            formatter={(value) => [`₹${value}`, 'Total Spent']}
+                        />
+                        <Legend layout="horizontal" verticalAlign="bottom" align="center" iconType="circle" />
+                      </PieChart>
+                    </ResponsiveContainer>
+                 </div>
               ) : (
-                <p className="text-gray-500">No data available</p>
+                <p className="text-gray-500">No data available for the selected month.</p>
               )}
             </div>
 
