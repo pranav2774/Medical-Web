@@ -31,12 +31,14 @@ const authRoutes = require('./routes/auth');
 const medicineRoutes = require('./routes/medicines');
 const userRoutes = require('./routes/users');
 const publicMedicinesRoutes = require('./routes/publicMedicines');
+const orderRoutes = require('./routes/orders');
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/medicines', medicineRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/public/medicines', publicMedicinesRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

@@ -32,7 +32,7 @@ const orderSchema = new mongoose.Schema(
     },
     prescriptionImageUrl: {
       type: String,
-      required: true,
+      required: false,
     },
     status: {
       type: String,
@@ -45,7 +45,16 @@ const orderSchema = new mongoose.Schema(
     },
     pickupDate: {
       type: Date,
-      default: null,
+      required: [true, 'Pickup Date is required'],
+    },
+    pickupTime: {
+      type: String,
+      required: [true, 'Pickup Time is required'],
+    },
+    phone: {
+      type: String,
+      required: [true, 'Contact phone number is required'],
+      trim: true,
     },
     isUrgent: {
       type: Boolean,

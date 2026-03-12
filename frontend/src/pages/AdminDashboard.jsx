@@ -100,6 +100,15 @@ const AdminDashboard = () => {
               >
                 User Management
               </Link>
+              <Link
+                to="/admin/orders"
+                className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/orders')
+                  ? 'bg-primary-50 text-primary-600 font-semibold'
+                  : 'text-gray-700'
+                  }`}
+              >
+                Pickup Orders
+              </Link>
             </nav>
           </div>
         </aside>

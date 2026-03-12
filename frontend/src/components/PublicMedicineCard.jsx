@@ -1,6 +1,13 @@
 import React from 'react';
+import { useCart } from '../context/CartContext';
 
 const PublicMedicineCard = ({ medicine }) => {
+    const { addToCart, updateQuantity, getCartItem } = useCart();
+    
+    // Check if item is in cart and its quantity
+    const cartItem = getCartItem(medicine._id);
+    const cartQuantity = cartItem ? cartItem.cartQuantity : 0;
+    const isOutOfStock = !medicine.stockStatus || medicine.quantity === 0;
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-IN');
     };
@@ -23,7 +30,7 @@ const PublicMedicineCard = ({ medicine }) => {
     };
 
     return (
-        <div className="card overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        <div className="card h-full flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
             {/* Image */}
             <div className="h-24 sm:h-40 bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center overflow-hidden relative">
                 {medicine.image ? (
@@ -45,7 +52,7 @@ const PublicMedicineCard = ({ medicine }) => {
             </div>
 
             {/* Content */}
-            <div className="p-2 sm:p-3">
+            <div className="p-2 sm:p-3 flex-1 flex flex-col">
                 {/* Name and Category */}
                 <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-1 line-clamp-2">
                     {medicine.name}
@@ -95,10 +102,49 @@ const PublicMedicineCard = ({ medicine }) => {
                 )}
 
                 {/* Expiry Date */}
-                <div className="flex items-center justify-between text-xs text-gray-500 pt-1.5 border-t border-gray-100">
+                <div className="flex items-center justify-between text-xs text-gray-500 pt-1.5 border-t border-gray-100 mb-3">
                     <span>Expiry: {formatDate(medicine.expiryDate)}</span>
                     {medicine.batchNumber && (
                         <span className="text-gray-400">Batch: {medicine.batchNumber}</span>
+                    )}
+                </div>
+
+                {/* Cart Action */}
+                <div className="mt-auto pt-2">
+                    {cartQuantity > 0 ? (
+                        <div className="flex items-center justify-between border border-primary-500 rounded-lg overflow-hidden h-9">
+                            <button 
+                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQuantity(medicine._id, -1); }}
+                                className="w-10 h-full bg-primary-50 text-primary-700 hover:bg-primary-100 font-bold flex items-center justify-center transition"
+                            >
+                                -
+                            </button>
+                            <span className="flex-1 text-center font-bold text-gray-800">
+                                {cartQuantity} in Cart
+                            </span>
+                            <button 
+                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQuantity(medicine._id, 1); }}
+                                disabled={cartQuantity >= medicine.quantity}
+                                className={`w-10 h-full font-bold flex items-center justify-center transition ${cartQuantity >= medicine.quantity ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-primary-50 text-primary-700 hover:bg-primary-100'}`}
+                            >
+                                +
+                            </button>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCart(medicine); }}
+                            disabled={isOutOfStock}
+                            className={`w-full py-2 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all ${
+                                isOutOfStock 
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-primary-600 hover:bg-primary-700 text-white shadow-md hover:shadow-lg'
+                            }`}
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+                        </button>
                     )}
                 </div>
             </div>
