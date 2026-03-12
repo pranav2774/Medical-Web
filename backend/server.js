@@ -32,6 +32,7 @@ const medicineRoutes = require('./routes/medicines');
 const userRoutes = require('./routes/users');
 const publicMedicinesRoutes = require('./routes/publicMedicines');
 const orderRoutes = require('./routes/orders');
+const expenseRoutes = require('./routes/expenses');
 
 // API Routes
 app.use('/api/auth', authRoutes);
@@ -39,6 +40,7 @@ app.use('/api/medicines', medicineRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/public/medicines', publicMedicinesRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/expenses', expenseRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
