@@ -117,7 +117,7 @@ const MyOrders = () => {
                                             <p className="text-gray-900 font-mono text-xs">{order._id.substring(order._id.length - 8).toUpperCase()}</p>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="flex gap-3 items-center">
                                         <span className={`px-2.5 py-1 rounded-md text-xs font-semibold capitalize border ${getStatusStyles(order.status)}`}>
                                             {order.status.replace(/_/g, ' ')}
@@ -142,7 +142,7 @@ const MyOrders = () => {
                                             </li>
                                         ))}
                                     </ul>
-                                    
+
                                     <div className="bg-blue-50/50 rounded-lg p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm border border-blue-100">
                                         <div>
                                             <p className="text-gray-500 text-xs font-semibold uppercase mb-1">Pickup Details</p>
@@ -162,7 +162,7 @@ const MyOrders = () => {
                                         {order.prescriptionImageUrl && (
                                             <div className="sm:col-span-2 mt-2 pt-3 border-t border-blue-200">
                                                 <a href={order.prescriptionImageUrl} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-800 flex items-center gap-2 text-sm font-medium">
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
                                                     View Uploaded Prescription
                                                 </a>
                                             </div>

@@ -9,7 +9,7 @@ const CartPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
-    
+
     // Form States
     const [phone, setPhone] = useState('');
     const [pickupDate, setPickupDate] = useState('');
@@ -89,7 +89,7 @@ const CartPage = () => {
                     </div>
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">Order Placed!</h2>
                     <p className="text-gray-600 mb-6">Your pickup order has been successfully created. We will prepare your medicines shortly.</p>
-                    <button 
+                    <button
                         onClick={() => navigate('/store')}
                         className="btn-primary w-full py-2 px-4 rounded-lg"
                     >
@@ -105,7 +105,7 @@ const CartPage = () => {
             <div className="max-w-4xl mx-auto">
                 <div className="flex items-center justify-between mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Your Cart</h1>
-                    <button 
+                    <button
                         onClick={() => navigate('/store')}
                         className="text-primary-600 hover:text-primary-700 font-medium"
                     >
@@ -126,7 +126,7 @@ const CartPage = () => {
                         </svg>
                         <h3 className="text-xl font-medium text-gray-900 mb-2">Your cart is empty</h3>
                         <p className="text-gray-500 mb-6">Looks like you haven't added any medicines yet.</p>
-                        <button 
+                        <button
                             onClick={() => navigate('/store')}
                             className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition"
                         >
@@ -159,7 +159,7 @@ const CartPage = () => {
                                             </div>
                                             <div className="flex flex-1 items-end justify-between text-sm mt-4">
                                                 <div className="flex items-center border border-gray-300 rounded-md">
-                                                    <button 
+                                                    <button
                                                         onClick={() => updateQuantity(item._id, -1)}
                                                         className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-l-md font-bold"
                                                     >
@@ -168,7 +168,7 @@ const CartPage = () => {
                                                     <span className="px-3 py-1 border-x border-gray-300 text-gray-800 font-medium">
                                                         {item.cartQuantity}
                                                     </span>
-                                                    <button 
+                                                    <button
                                                         onClick={() => updateQuantity(item._id, 1)}
                                                         className="px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-r-md font-bold"
                                                         disabled={item.cartQuantity >= item.quantity}
@@ -189,17 +189,17 @@ const CartPage = () => {
                                 ))}
                             </ul>
                         </div>
-                        
+
                         {/* Order Summary Form */}
                         <div className="w-full md:w-1/3 p-6 bg-gray-50 flex flex-col h-full self-stretch">
                             <h2 className="text-lg font-bold text-gray-900 mb-4">Checkout Details</h2>
                             <form onSubmit={handleCheckout} className="flex flex-col gap-4 flex-1">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-                                    <input 
-                                        type="tel" 
-                                        required 
-                                        value={phone} 
+                                    <input
+                                        type="tel"
+                                        required
+                                        value={phone}
                                         onChange={e => setPhone(e.target.value)}
                                         className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm py-2 px-3 border"
                                         placeholder="Enter your phone number"
@@ -208,21 +208,21 @@ const CartPage = () => {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Pickup Date *</label>
-                                        <input 
-                                            type="date" 
-                                            required 
+                                        <input
+                                            type="date"
+                                            required
                                             min={getTodayDateString()}
-                                            value={pickupDate} 
+                                            value={pickupDate}
                                             onChange={e => setPickupDate(e.target.value)}
                                             className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm py-2 px-3 border"
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Pickup Time *</label>
-                                        <input 
-                                            type="time" 
-                                            required 
-                                            value={pickupTime} 
+                                        <input
+                                            type="time"
+                                            required
+                                            value={pickupTime}
                                             onChange={e => setPickupTime(e.target.value)}
                                             className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm py-2 px-3 border"
                                         />
@@ -233,10 +233,10 @@ const CartPage = () => {
                                     <div className="bg-red-50 p-3 rounded-md border border-red-100">
                                         <label className="block text-sm font-bold text-red-700 mb-1">Prescription Required *</label>
                                         <p className="text-xs text-red-600 mb-2">One or more medicines in your cart require a doctor's prescription.</p>
-                                        <input 
-                                            type="file" 
+                                        <input
+                                            type="file"
                                             accept="image/*"
-                                            required 
+                                            required
                                             onChange={handleImageUpload}
                                             className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
                                         />
@@ -245,9 +245,9 @@ const CartPage = () => {
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Special Instructions Context</label>
-                                    <textarea 
+                                    <textarea
                                         rows="2"
-                                        value={notes} 
+                                        value={notes}
                                         onChange={e => setNotes(e.target.value)}
                                         className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm py-2 px-3 border"
                                         placeholder="Any notes for the pharmacy?"
@@ -263,17 +263,16 @@ const CartPage = () => {
                                         <span>Total Amount</span>
                                         <span>₹{getCartTotal().toFixed(2)}</span>
                                     </div>
-                                    
+
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className={`w-full py-3 px-4 rounded-xl text-white font-bold transition ${
-                                            isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary-600 hover:bg-primary-700 shadow-lg'
-                                        }`}
+                                        className={`w-full py-3 px-4 rounded-xl text-white font-bold transition ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary-600 hover:bg-primary-700 shadow-lg'
+                                            }`}
                                     >
                                         {isSubmitting ? 'Processing...' : 'Confirm Pickup Order'}
                                     </button>
-                                    
+
                                     <p className="mt-3 text-xs text-center text-gray-500">
                                         Payment is collected securely at pickup.
                                     </p>

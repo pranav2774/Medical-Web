@@ -30,9 +30,9 @@ const PublicMedicineCard = ({ medicine }) => {
     };
 
     return (
-        <div className="card h-full flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        <div className="bg-white border border-gray-200 rounded-sm h-full flex flex-col overflow-hidden transition-colors duration-200 hover:border-gray-300">
             {/* Image */}
-            <div className="h-24 sm:h-40 bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center overflow-hidden relative">
+            <div className="h-28 sm:h-44 bg-gray-50 flex items-center justify-center overflow-hidden relative border-b border-gray-100">
                 {medicine.image ? (
                     <img
                         src={medicine.image}
@@ -40,8 +40,8 @@ const PublicMedicineCard = ({ medicine }) => {
                         className="w-full h-full object-cover"
                     />
                 ) : (
-                    <svg className="w-12 h-12 sm:w-20 sm:h-20 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    <svg className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                     </svg>
                 )}
                 {medicine.requiresPrescription && (
@@ -52,12 +52,12 @@ const PublicMedicineCard = ({ medicine }) => {
             </div>
 
             {/* Content */}
-            <div className="p-2 sm:p-3 flex-1 flex flex-col">
+            <div className="p-4 sm:p-5 flex-1 flex flex-col">
                 {/* Name and Category */}
-                <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-1 line-clamp-2">
+                <h3 className="font-semibold text-gray-900 text-sm sm:text-base leading-tight mb-1 line-clamp-2">
                     {medicine.name}
                 </h3>
-                <p className="text-xs text-gray-600 capitalize mb-1.5">{medicine.category}</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">{medicine.category}</p>
 
                 {/* Manufacturer */}
                 {medicine.manufacturer && (
@@ -65,12 +65,12 @@ const PublicMedicineCard = ({ medicine }) => {
                 )}
 
                 {/* Price and Stock */}
-                <div className="flex justify-between items-center mb-2">
+                <div className="flex justify-between items-center mb-3 mt-1">
                     <div>
-                        <p className="text-lg sm:text-xl font-bold text-primary-600">₹{medicine.price.toFixed(2)}</p>
+                        <p className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight">₹{medicine.price.toFixed(2)}</p>
                     </div>
-                    <span className={`px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full text-xs font-semibold ${getStockBadgeClass(medicine.stockStatus)}`}>
-                        {medicine.stockStatus ? '✓ In Stock' : '✗ Out of Stock'}
+                    <span className={`px-2 py-1 rounded-sm text-[10px] uppercase font-bold tracking-wider ${getStockBadgeClass(medicine.stockStatus)}`}>
+                        {medicine.stockStatus ? 'In Stock' : 'Out of Stock'}
                     </span>
                 </div>
 
@@ -110,22 +110,22 @@ const PublicMedicineCard = ({ medicine }) => {
                 </div>
 
                 {/* Cart Action */}
-                <div className="mt-auto pt-2">
+                <div className="mt-auto pt-3">
                     {cartQuantity > 0 ? (
-                        <div className="flex items-center justify-between border border-primary-500 rounded-lg overflow-hidden h-9">
+                        <div className="flex items-center justify-between border border-gray-300 rounded-sm overflow-hidden h-9 bg-gray-50">
                             <button 
                                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQuantity(medicine._id, -1); }}
-                                className="w-10 h-full bg-primary-50 text-primary-700 hover:bg-primary-100 font-bold flex items-center justify-center transition"
+                                className="w-10 h-full text-gray-600 hover:bg-gray-200 hover:text-gray-900 font-medium flex items-center justify-center transition-colors"
                             >
                                 -
                             </button>
-                            <span className="flex-1 text-center font-bold text-gray-800">
+                            <span className="flex-1 text-center text-sm font-semibold text-gray-900">
                                 {cartQuantity} in Cart
                             </span>
                             <button 
                                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateQuantity(medicine._id, 1); }}
                                 disabled={cartQuantity >= medicine.quantity}
-                                className={`w-10 h-full font-bold flex items-center justify-center transition ${cartQuantity >= medicine.quantity ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-primary-50 text-primary-700 hover:bg-primary-100'}`}
+                                className={`w-10 h-full font-medium flex items-center justify-center transition-colors ${cartQuantity >= medicine.quantity ? 'text-gray-400 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'}`}
                             >
                                 +
                             </button>
@@ -134,14 +134,14 @@ const PublicMedicineCard = ({ medicine }) => {
                         <button
                             onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCart(medicine); }}
                             disabled={isOutOfStock}
-                            className={`w-full py-2 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-all ${
+                            className={`w-full py-2 rounded-sm font-medium text-sm flex items-center justify-center gap-2 transition-colors ${
                                 isOutOfStock 
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : 'bg-primary-600 hover:bg-primary-700 text-white shadow-md hover:shadow-lg'
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
+                                    : 'bg-primary-600 hover:bg-primary-700 text-white border border-transparent shadow-sm'
                             }`}
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
                             {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
                         </button>

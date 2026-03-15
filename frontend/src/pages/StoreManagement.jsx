@@ -7,6 +7,7 @@ import DeleteConfirmDialog from '../components/DeleteConfirmDialog';
 import MedicineCard from '../components/MedicineCard';
 import { authService } from '../utils/authService';
 import logoImg from '../assets/logo.png';
+import AdminNavbar from '../components/AdminNavbar';
 
 const StoreManagement = () => {
     const [user, setUser] = useState(null);
@@ -135,9 +136,9 @@ const StoreManagement = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white">
+        <div className="min-h-screen bg-[#fafafa] flex flex-col">
             {/* Navbar */}
-            <nav className="bg-white shadow-sm sticky top-0 z-50">
+            <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
                 <div className="max-w-full px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center gap-2 sm:gap-3">
@@ -150,10 +151,10 @@ const StoreManagement = () => {
                             </div>
                         </div>
                         <div className="flex items-center gap-2 sm:gap-4">
-                            <span className="hidden sm:inline text-gray-600 text-sm">Welcome, {user?.name}!</span>
+                            <span className="hidden sm:inline text-gray-600 text-sm font-medium">Welcome, {user?.name}!</span>
                             <button
                                 onClick={handleLogout}
-                                className="btn-primary text-xs sm:text-sm px-3 sm:px-6 py-1 sm:py-2"
+                                className="px-4 py-1.5 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-sm hover:bg-gray-800 transition-colors"
                             >
                                 Logout
                             </button>
@@ -194,7 +195,7 @@ const StoreManagement = () => {
                     </div>
 
                     {/* Search and Filters */}
-                    <div className="card p-4">
+                    <div className="bg-white p-4 border border-gray-200 rounded-sm mb-6 shadow-sm">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                             {/* Search */}
                             <div className="lg:col-span-2">
@@ -206,7 +207,7 @@ const StoreManagement = () => {
                                         setSearchTerm(e.target.value);
                                         setCurrentPage(1);
                                     }}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-colors"
                                 />
                             </div>
 
@@ -218,7 +219,7 @@ const StoreManagement = () => {
                                         setCategoryFilter(e.target.value);
                                         setCurrentPage(1);
                                     }}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
                                 >
                                     <option value="">All Categories</option>
                                     <option value="tablet">Tablet</option>
@@ -238,7 +239,7 @@ const StoreManagement = () => {
                                         setIllnessFilter(e.target.value);
                                         setCurrentPage(1);
                                     }}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
                                 >
                                     <option value="">All Illnesses</option>
                                     <option value="headache">Headache</option>
@@ -262,7 +263,7 @@ const StoreManagement = () => {
                                         setStockFilter(e.target.value);
                                         setCurrentPage(1);
                                     }}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
                                 >
                                     <option value="">All Stock Status</option>
                                     <option value="true">In Stock</option>
@@ -273,21 +274,21 @@ const StoreManagement = () => {
 
                         {/* View Mode Toggle */}
                         <div className="flex items-center gap-2 mt-4 justify-end">
-                            <span className="text-sm text-gray-600">View:</span>
+                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wider">View:</span>
                             <button
                                 onClick={() => setViewMode('table')}
-                                className={`px-3 py-1 rounded ${viewMode === 'table'
-                                    ? 'bg-primary-600 text-white'
-                                    : 'bg-gray-200 text-gray-700'
+                                className={`px-4 py-1.5 rounded-sm text-sm font-medium transition-colors border ${viewMode === 'table'
+                                    ? 'bg-gray-900 text-white border-transparent'
+                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
                                     }`}
                             >
                                 Table
                             </button>
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`px-3 py-1 rounded ${viewMode === 'grid'
-                                    ? 'bg-primary-600 text-white'
-                                    : 'bg-gray-200 text-gray-700'
+                                className={`px-4 py-1.5 rounded-sm text-sm font-medium transition-colors border ${viewMode === 'grid'
+                                    ? 'bg-gray-900 text-white border-transparent'
+                                    : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
                                     }`}
                             >
                                 Grid
@@ -316,7 +317,7 @@ const StoreManagement = () => {
 
                 {/* Table View */}
                 {!loading && !error && viewMode === 'table' && (
-                    <div className="card overflow-hidden">
+                    <div className="bg-white border border-gray-200 rounded-sm overflow-hidden shadow-sm">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead className="bg-gray-50 border-b">
@@ -412,21 +413,27 @@ const StoreManagement = () => {
 
                 {/* Pagination */}
                 {!loading && !error && totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-2 mt-6">
+                    <div className="flex justify-center items-center gap-1.5 mt-8">
                         <button
                             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                             disabled={currentPage === 1}
-                            className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                            className={`px-3 py-1.5 rounded-sm text-sm font-medium transition-colors border ${currentPage === 1
+                                ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
+                                : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900 shadow-sm'
+                                }`}
                         >
-                            Previous
+                            Prev
                         </button>
-                        <span className="text-gray-600">
+                        <span className="text-sm font-medium text-gray-600 mx-2">
                             Page {currentPage} of {totalPages}
                         </span>
                         <button
                             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                             disabled={currentPage === totalPages}
-                            className="px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                            className={`px-3 py-1.5 rounded-sm text-sm font-medium transition-colors border ${currentPage === totalPages
+                                ? 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
+                                : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900 shadow-sm'
+                                }`}
                         >
                             Next
                         </button>

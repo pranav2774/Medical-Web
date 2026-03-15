@@ -54,9 +54,9 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white">
+    <div className="min-h-screen bg-[#fafafa] flex flex-col">
       {/* Navbar */}
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2 sm:gap-8">
@@ -79,10 +79,10 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-2 sm:gap-4">
-              <span className="hidden sm:inline text-gray-600 text-sm">Welcome, {user?.name}!</span>
+              <span className="hidden sm:inline text-gray-600 text-sm font-medium">Welcome, {user?.name}!</span>
               <button
                 onClick={handleLogout}
-                className="btn-primary text-xs sm:text-sm px-3 sm:px-6 py-1 sm:py-2"
+                className="px-4 py-1.5 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-sm hover:bg-gray-800 transition-colors"
               >
                 Logout
               </button>
@@ -92,76 +92,76 @@ const AdminDashboard = () => {
       </nav>
 
       {/* Sidebar & Main Content */}
-      <div className="flex">
+      <div className="flex flex-1">
         {/* Sidebar */}
-        <aside className={`fixed md:static w-64 bg-white shadow-sm min-h-[calc(100vh-64px)] z-40 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        <aside className={`fixed md:static w-64 bg-white border-r border-gray-200 min-h-[calc(100vh-64px)] z-40 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
           }`}>
           <div className="p-4 sm:p-6 space-y-4">
-            <h3 className="text-sm font-semibold text-gray-500 uppercase">Menu</h3>
-            <nav className="space-y-2">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Menu</h3>
+            <nav className="space-y-1">
               <Link
                 to="/admin"
-                className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin')
-                  ? 'bg-primary-50 text-primary-600 font-semibold'
-                  : 'text-gray-700'
+                className={`block px-4 py-2 rounded-sm text-sm transition-colors ${isActive('/admin')
+                  ? 'bg-primary-50 text-primary-700 font-medium'
+                  : 'text-gray-600 hover:bg-gray-50'
                   }`}
               >
                 Dashboard
               </Link>
               <Link
                 to="/admin/store"
-                className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/store')
-                  ? 'bg-primary-50 text-primary-600 font-semibold'
-                  : 'text-gray-700'
+                className={`block px-4 py-2 rounded-sm text-sm transition-colors ${isActive('/admin/store')
+                  ? 'bg-primary-50 text-primary-700 font-medium'
+                  : 'text-gray-600 hover:bg-gray-50'
                   }`}
               >
                 Store Management
               </Link>
               <Link
                 to="/admin/customers"
-                className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/customers')
-                  ? 'bg-primary-50 text-primary-600 font-semibold'
-                  : 'text-gray-700'
+                className={`block px-4 py-2 rounded-sm text-sm transition-colors ${isActive('/admin/customers')
+                  ? 'bg-primary-50 text-primary-700 font-medium'
+                  : 'text-gray-600 hover:bg-gray-50'
                   }`}
               >
                 User Management
               </Link>
               <Link
                 to="/admin/orders"
-                className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/orders')
-                  ? 'bg-primary-50 text-primary-600 font-semibold'
-                  : 'text-gray-700'
+                className={`block px-4 py-2 rounded-sm text-sm transition-colors ${isActive('/admin/orders')
+                  ? 'bg-primary-50 text-primary-700 font-medium'
+                  : 'text-gray-600 hover:bg-gray-50'
                   }`}
               >
                 Pickup Orders
               </Link>
 
               {/* Expense Management */}
-              <div className="pt-2 mt-2 border-t border-gray-200">
-                <h4 className="text-xs font-semibold text-gray-600 px-4 py-2 uppercase">Expense Management</h4>
+              <div className="pt-4 mt-2 border-t border-gray-200">
+                <h4 className="text-[10px] font-bold text-gray-400 px-4 py-2 uppercase tracking-widest">Finance</h4>
                 <Link
                   to="/admin/expenses"
-                  className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/expenses')
-                    ? 'bg-primary-50 text-primary-600 font-semibold'
-                    : 'text-gray-700'
+                  className={`block px-4 py-2 rounded-sm text-sm transition-colors ${isActive('/admin/expenses')
+                    ? 'bg-primary-50 text-primary-700 font-medium'
+                    : 'text-gray-600 hover:bg-gray-50'
                     }`}
                 >
                   Expenses
                 </Link>
                 <Link
                   to="/admin/analytics"
-                  className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/analytics')
-                    ? 'bg-primary-50 text-primary-600 font-semibold'
-                    : 'text-gray-700'
+                  className={`block px-4 py-2 rounded-sm text-sm transition-colors ${isActive('/admin/analytics')
+                    ? 'bg-primary-50 text-primary-700 font-medium'
+                    : 'text-gray-600 hover:bg-gray-50'
                     }`}
                 >
                   Analytics
                 </Link>
                 <Link
                   to="/admin/budget"
-                  className={`block px-4 py-2 rounded-lg text-sm hover:bg-primary-100 transition ${isActive('/admin/budget')
-                    ? 'bg-primary-50 text-primary-600 font-semibold'
-                    : 'text-gray-700'
+                  className={`block px-4 py-2 rounded-sm text-sm transition-colors ${isActive('/admin/budget')
+                    ? 'bg-primary-50 text-primary-700 font-medium'
+                    : 'text-gray-600 hover:bg-gray-50'
                     }`}
                 >
                   Budget Settings
@@ -180,10 +180,10 @@ const AdminDashboard = () => {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 p-4 sm:p-8 w-full bg-gray-50 overflow-x-hidden min-h-screen">
-          <div className="mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">Overview Dashboard</h2>
-            <p className="text-gray-500 mt-1">Here's what is happening with your pharmacy today.</p>
+        <main className="flex-1 p-4 sm:p-8 w-full bg-[#fafafa] overflow-x-hidden min-h-[calc(100vh-64px)]">
+          <div className="mb-8 max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Overview Dashboard</h2>
+            <p className="text-gray-500 mt-1 text-sm">Here's what is happening with your pharmacy today.</p>
           </div>
 
           {loading ? (
@@ -199,9 +199,9 @@ const AdminDashboard = () => {
             stats && (
               <div className="space-y-6 max-w-7xl mx-auto">
                 {/* KPI Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                   {/* Revenue */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                  <div className="bg-white rounded-sm p-6 border border-gray-200 flex flex-col justify-between hover:border-gray-300 transition-colors">
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-sm font-medium text-gray-500">Today's Revenue</p>
@@ -214,7 +214,7 @@ const AdminDashboard = () => {
                   </div>
 
                   {/* Expenses */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                  <div className="bg-white rounded-sm p-6 border border-gray-200 flex flex-col justify-between hover:border-gray-300 transition-colors">
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-sm font-medium text-gray-500">Today's Expenses</p>
@@ -233,7 +233,7 @@ const AdminDashboard = () => {
                   </div>
 
                   {/* Pending Orders */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                  <div className="bg-white rounded-sm p-6 border border-gray-200 flex flex-col justify-between hover:border-gray-300 transition-colors">
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-sm font-medium text-gray-500">Pending Orders</p>
@@ -249,7 +249,7 @@ const AdminDashboard = () => {
                   </div>
 
                   {/* Low Stock */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                  <div className="bg-white rounded-sm p-6 border border-gray-200 flex flex-col justify-between hover:border-gray-300 transition-colors">
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-sm font-medium text-gray-500">Low Stock Items</p>
@@ -266,27 +266,27 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Charts Area */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mt-6">
                   {/* Revenue vs Expenses Chart */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 lg:col-span-2">
-                    <h3 className="text-lg font-bold text-gray-800 mb-6">7-Day Financial Performance</h3>
+                  <div className="bg-white rounded-sm p-6 border border-gray-200 lg:col-span-2">
+                    <h3 className="text-lg font-bold text-gray-900 mb-6 tracking-tight">7-Day Financial Performance</h3>
                     <div className="h-80 w-full">
                       <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={stats.salesTrend} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                           <defs>
                             <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#818cf8" stopOpacity={0.8}/>
-                              <stop offset="95%" stopColor="#818cf8" stopOpacity={0}/>
+                              <stop offset="5%" stopColor="#818cf8" stopOpacity={0.8} />
+                              <stop offset="95%" stopColor="#818cf8" stopOpacity={0} />
                             </linearGradient>
                             <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#f87171" stopOpacity={0.8}/>
-                              <stop offset="95%" stopColor="#f87171" stopOpacity={0}/>
+                              <stop offset="5%" stopColor="#f87171" stopOpacity={0.8} />
+                              <stop offset="95%" stopColor="#f87171" stopOpacity={0} />
                             </linearGradient>
                           </defs>
-                          <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} dy={10} />
-                          <YAxis axisLine={false} tickLine={false} tick={{fill: '#9ca3af', fontSize: 12}} tickFormatter={(value) => `₹${value}`} dx={-10} />
+                          <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dy={10} />
+                          <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} tickFormatter={(value) => `₹${value}`} dx={-10} />
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                          <Tooltip 
+                          <Tooltip
                             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
                             formatter={(value) => [`₹${value}`, undefined]}
                           />
@@ -298,29 +298,29 @@ const AdminDashboard = () => {
                   </div>
 
                   {/* Sub-widgets */}
-                   <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col">
-                      <h3 className="text-lg font-bold text-gray-800 mb-4">Quick Insights</h3>
-                      <div className="flex-1 flex flex-col justify-center space-y-6">
-                         <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                             <p className="text-sm font-medium text-gray-500 mb-1">Total Customer Base</p>
-                             <div className="text-3xl font-black text-primary-700">{stats.kpi.totalCustomers}</div>
-                             <p className="text-xs font-semibold text-gray-400 mt-2 uppercase tracking-wide">Registered Accounts</p>
-                         </div>
-                         <div className="p-4 rounded-xl border border-gray-100 bg-gradient-to-br from-primary-50 to-white">
-                             <p className="text-sm font-medium text-gray-700 mb-3">Quick Actions</p>
-                             <div className="grid grid-cols-2 gap-2">
-                                <Link to="/admin/store" className="text-xs font-semibold bg-white border border-gray-200 rounded-lg p-2 text-center text-gray-600 hover:text-primary-600 hover:border-primary-200 transition">Add Meds</Link>
-                                <Link to="/admin/expenses" className="text-xs font-semibold bg-white border border-gray-200 rounded-lg p-2 text-center text-gray-600 hover:text-primary-600 hover:border-primary-200 transition">Log Expense</Link>
-                             </div>
-                         </div>
+                  <div className="bg-white rounded-sm p-6 border border-gray-200 flex flex-col">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 tracking-tight">Quick Insights</h3>
+                    <div className="flex-1 flex flex-col justify-center space-y-6">
+                      <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                        <p className="text-sm font-medium text-gray-500 mb-1">Total Customer Base</p>
+                        <div className="text-3xl font-black text-primary-700">{stats.kpi.totalCustomers}</div>
+                        <p className="text-xs font-semibold text-gray-400 mt-2 uppercase tracking-wide">Registered Accounts</p>
                       </div>
-                   </div>
+                      <div className="p-4 rounded-xl border border-gray-100 bg-gradient-to-br from-primary-50 to-white">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Quick Actions</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Link to="/admin/store" className="text-xs font-semibold bg-white border border-gray-200 rounded-lg p-2 text-center text-gray-600 hover:text-primary-600 hover:border-primary-200 transition">Add Meds</Link>
+                          <Link to="/admin/expenses" className="text-xs font-semibold bg-white border border-gray-200 rounded-lg p-2 text-center text-gray-600 hover:text-primary-600 hover:border-primary-200 transition">Log Expense</Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Recent Orders Table */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-6">
-                  <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                    <h3 className="text-lg font-bold text-gray-800">Recent Pickup Orders</h3>
+                <div className="bg-white rounded-sm border border-gray-200 overflow-hidden mt-6">
+                  <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                    <h3 className="text-lg font-bold text-gray-900 tracking-tight">Recent Pickup Orders</h3>
                     <Link to="/admin/orders" className="text-sm font-medium text-primary-600 hover:text-primary-700">View Full History</Link>
                   </div>
                   <div className="overflow-x-auto">
@@ -346,11 +346,10 @@ const AdminDashboard = () => {
                               <td className="px-6 py-4 text-gray-600">{order.patientId?.name || 'Guest'}</td>
                               <td className="px-6 py-4 text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</td>
                               <td className="px-6 py-4">
-                                <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${
-                                  order.status === 'completed' ? 'bg-green-100 text-green-700' :
-                                  order.status === 'cancelled' ? 'bg-red-100 text-red-700' :
-                                  'bg-blue-100 text-blue-700'
-                                }`}>
+                                <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${order.status === 'completed' ? 'bg-green-100 text-green-700' :
+                                    order.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                                      'bg-blue-100 text-blue-700'
+                                  }`}>
                                   {order.status.replace(/_/g, ' ').toUpperCase()}
                                 </span>
                               </td>

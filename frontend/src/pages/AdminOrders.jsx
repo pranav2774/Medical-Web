@@ -80,9 +80,9 @@ const AdminOrders = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="min-h-screen bg-[#fafafa] flex flex-col">
             {/* Navbar */}
-            <nav className="bg-white shadow-sm sticky top-0 z-50">
+            <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
                 <div className="max-w-full px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center gap-2 sm:gap-8">
@@ -119,118 +119,118 @@ const AdminOrders = () => {
                     </svg>
                     Back to Dashboard
                 </Link>
-                    <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div>
-                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Pickup Orders</h1>
-                            <p className="text-gray-600 mt-1">Manage and track customer pickup requests</p>
+                <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Pickup Orders</h1>
+                        <p className="text-gray-600 mt-1">Manage and track customer pickup requests</p>
+                    </div>
+                </div>
+
+                {error && (
+                    <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
+                        {error}
+                    </div>
+                )}
+
+                {loading ? (
+                    <div className="flex justify-center py-12">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                    </div>
+                ) : (
+                    <div className="bg-white border border-gray-200 rounded-sm shadow-sm overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items Summary</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {orders.map((order) => (
+                                        <tr key={order._id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                #{order._id.slice(-6).toUpperCase()}
+                                                <div className="text-xs text-gray-500 mt-1">
+                                                    {new Date(order.createdAt).toLocaleDateString()}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="text-sm font-medium text-gray-900">{order.patientId?.name || 'Unknown User'}</div>
+                                                <div className="text-sm text-gray-500">{order.patientId?.email}</div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-sm text-gray-900 max-w-xs break-words">
+                                                    <ul className="list-disc pl-4 space-y-1">
+                                                        {order.medicines.map((m, idx) => (
+                                                            <li key={idx}>
+                                                                <span className="font-medium text-gray-700">{m.quantity}x</span> {m.medicineId?.name || 'Unknown'}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-xs text-gray-600 space-y-1">
+                                                    <p><span className="font-semibold text-gray-800">Mo:</span> {order.phone}</p>
+                                                    <p><span className="font-semibold text-gray-800">Pickup:</span> {new Date(order.pickupDate).toLocaleDateString()} at {order.pickupTime}</p>
+                                                    {order.notes && <p className="italic text-gray-500 line-clamp-1">"{order.notes}"</p>}
+                                                    {order.prescriptionImageUrl && (
+                                                        <a href={order.prescriptionImageUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary-600 hover:text-primary-800 font-medium mt-1">
+                                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                                                            Rx Attached
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+                                                ₹{order.totalPrice.toFixed(2)}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <select
+                                                    value={order.status}
+                                                    onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                                                    className={`text-sm rounded-full px-3 py-1 font-semibold border-none cursor-pointer focus:ring-2 focus:ring-offset-1 focus:ring-primary-500 ${getStatusColor(order.status)}`}
+                                                >
+                                                    <option value="pending">Pending</option>
+                                                    <option value="confirmed">Confirmed</option>
+                                                    <option value="packed">Packed</option>
+                                                    <option value="ready_for_pickup">Ready for Pickup</option>
+                                                    <option value="completed">Completed</option>
+                                                    <option value="cancelled">Cancelled</option>
+                                                </select>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <select
+                                                    value={order.paymentStatus}
+                                                    onChange={(e) => handlePaymentStatusChange(order._id, e.target.value)}
+                                                    className={`text-sm rounded-full px-3 py-1 font-semibold border-none cursor-pointer focus:ring-2 focus:ring-offset-1 focus:ring-primary-500 ${getPaymentStatusColor(order.paymentStatus)}`}
+                                                >
+                                                    <option value="pending">Pending</option>
+                                                    <option value="paid">Paid</option>
+                                                    <option value="failed">Failed</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {orders.length === 0 && (
+                                        <tr>
+                                            <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
+                                                No pickup orders found.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-
-                    {error && (
-                        <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
-                            {error}
-                        </div>
-                    )}
-
-                    {loading ? (
-                        <div className="flex justify-center py-12">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-                        </div>
-                    ) : (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                            <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
-                                        <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items Summary</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                        {orders.map((order) => (
-                                            <tr key={order._id} className="hover:bg-gray-50 transition-colors">
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    #{order._id.slice(-6).toUpperCase()}
-                                                    <div className="text-xs text-gray-500 mt-1">
-                                                        {new Date(order.createdAt).toLocaleDateString()}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm font-medium text-gray-900">{order.patientId?.name || 'Unknown User'}</div>
-                                                    <div className="text-sm text-gray-500">{order.patientId?.email}</div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="text-sm text-gray-900 max-w-xs break-words">
-                                                        <ul className="list-disc pl-4 space-y-1">
-                                                            {order.medicines.map((m, idx) => (
-                                                                <li key={idx}>
-                                                                    <span className="font-medium text-gray-700">{m.quantity}x</span> {m.medicineId?.name || 'Unknown'}
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="text-xs text-gray-600 space-y-1">
-                                                        <p><span className="font-semibold text-gray-800">Mo:</span> {order.phone}</p>
-                                                        <p><span className="font-semibold text-gray-800">Pickup:</span> {new Date(order.pickupDate).toLocaleDateString()} at {order.pickupTime}</p>
-                                                        {order.notes && <p className="italic text-gray-500 line-clamp-1">"{order.notes}"</p>}
-                                                        {order.prescriptionImageUrl && (
-                                                            <a href={order.prescriptionImageUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary-600 hover:text-primary-800 font-medium mt-1">
-                                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-                                                                Rx Attached
-                                                            </a>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                                    ₹{order.totalPrice.toFixed(2)}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <select
-                                                        value={order.status}
-                                                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                                                        className={`text-sm rounded-full px-3 py-1 font-semibold border-none cursor-pointer focus:ring-2 focus:ring-offset-1 focus:ring-primary-500 ${getStatusColor(order.status)}`}
-                                                    >
-                                                        <option value="pending">Pending</option>
-                                                        <option value="confirmed">Confirmed</option>
-                                                        <option value="packed">Packed</option>
-                                                        <option value="ready_for_pickup">Ready for Pickup</option>
-                                                        <option value="completed">Completed</option>
-                                                        <option value="cancelled">Cancelled</option>
-                                                    </select>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <select
-                                                        value={order.paymentStatus}
-                                                        onChange={(e) => handlePaymentStatusChange(order._id, e.target.value)}
-                                                        className={`text-sm rounded-full px-3 py-1 font-semibold border-none cursor-pointer focus:ring-2 focus:ring-offset-1 focus:ring-primary-500 ${getPaymentStatusColor(order.paymentStatus)}`}
-                                                    >
-                                                        <option value="pending">Pending</option>
-                                                        <option value="paid">Paid</option>
-                                                        <option value="failed">Failed</option>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                        {orders.length === 0 && (
-                                            <tr>
-                                                <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
-                                                    No pickup orders found.
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    )}
-                </main>
+                )}
+            </main>
         </div>
     );
 };

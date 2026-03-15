@@ -3,13 +3,13 @@ import { toast } from 'sonner';
 import DeleteConfirmDialog from '../components/DeleteConfirmDialog';
 import { Link } from 'react-router-dom';
 import * as expenseService from '../utils/expenseService';
+import AdminNavbar from '../components/AdminNavbar';
 
 export default function BudgetSettings() {
   const [budgets, setBudgets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // Form state
+
   const [formData, setFormData] = useState({
     category: '',
     monthYear: '',
@@ -17,21 +17,17 @@ export default function BudgetSettings() {
     alertThreshold: 80,
   });
 
-  // Modal states
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Categories for dropdown
   const categories = ['Medicine', 'Medical Supplies', 'Equipment', 'Repairs', 'Other'];
 
-  // Get current month in YYYY-MM format
   const getCurrentMonth = () => {
     const today = new Date();
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
   };
 
-  // Fetch budgets for current month
   const fetchBudgets = async () => {
     try {
       setLoading(true);
@@ -47,39 +43,25 @@ export default function BudgetSettings() {
     }
   };
 
-  // Initial load
   useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
-      monthYear: getCurrentMonth(),
-    }));
+    setFormData(prev => ({ ...prev, monthYear: getCurrentMonth() }));
   }, []);
 
-  // Fetch when monthYear changes
   useEffect(() => {
-    if (formData.monthYear) {
-      fetchBudgets();
-    }
+    if (formData.monthYear) fetchBudgets();
   }, [formData.monthYear]);
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Handle set budget
   const handleSetBudget = async (e) => {
     e.preventDefault();
-
     if (!formData.category || !formData.monthYear || !formData.budgetAmount) {
       toast.error('Please fill in all required fields');
       return;
     }
-
     try {
       const budgetData = {
         category: formData.category,
@@ -87,7 +69,6 @@ export default function BudgetSettings() {
         budgetAmount: parseFloat(formData.budgetAmount),
         alertThreshold: parseInt(formData.alertThreshold),
       };
-
       if (isEditing && selectedBudget) {
         await expenseService.updateBudget(selectedBudget._id, budgetData);
         toast.success('Budget updated successfully');
@@ -96,14 +77,7 @@ export default function BudgetSettings() {
         await expenseService.setBudget(budgetData);
         toast.success('Budget set successfully');
       }
-
-      // Reset form
-      setFormData(prev => ({
-        ...prev,
-        category: '',
-        budgetAmount: '',
-        alertThreshold: 80,
-      }));
+      setFormData(prev => ({ ...prev, category: '', budgetAmount: '', alertThreshold: 80 }));
       setSelectedBudget(null);
       fetchBudgets();
     } catch (err) {
@@ -111,7 +85,6 @@ export default function BudgetSettings() {
     }
   };
 
-  // Handle edit budget
   const handleEditBudget = (budget) => {
     setFormData({
       category: budget.category,
@@ -123,7 +96,6 @@ export default function BudgetSettings() {
     setIsEditing(true);
   };
 
-  // Handle delete budget
   const handleDeleteBudget = async () => {
     try {
       await expenseService.deleteBudget(selectedBudget._id);
@@ -135,27 +107,15 @@ export default function BudgetSettings() {
     }
   };
 
-  // Cancel editing
   const handleCancelEdit = () => {
     setIsEditing(false);
     setSelectedBudget(null);
-    setFormData(prev => ({
-      ...prev,
-      category: '',
-      budgetAmount: '',
-      alertThreshold: 80,
-    }));
+    setFormData(prev => ({ ...prev, category: '', budgetAmount: '', alertThreshold: 80 }));
   };
 
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-    }).format(amount);
-  };
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount);
 
-  // Get budget status
   const getBudgetStatus = (budget) => {
     if (budget.isExceeded) return 'EXCEEDED';
     const percentage = (budget.currentSpending / budget.budgetAmount) * 100;
@@ -163,273 +123,265 @@ export default function BudgetSettings() {
     return 'OK';
   };
 
-  // Get status color
-  const getStatusColor = (status) => {
+  const getStatusStyle = (status) => {
     switch (status) {
-      case 'EXCEEDED':
-        return 'bg-red-100 text-red-800';
-      case 'WARNING':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-green-100 text-green-800';
+      case 'EXCEEDED': return 'bg-red-50 text-red-700 border border-red-200';
+      case 'WARNING': return 'bg-amber-50 text-amber-700 border border-amber-200';
+      default: return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+    }
+  };
+
+  const getIconStyle = (status) => {
+    switch (status) {
+      case 'EXCEEDED': return 'bg-red-100 text-red-600';
+      case 'WARNING': return 'bg-amber-100 text-amber-600';
+      default: return 'bg-emerald-100 text-emerald-600';
+    }
+  };
+
+  const getBarColor = (status) => {
+    switch (status) {
+      case 'EXCEEDED': return 'bg-red-500';
+      case 'WARNING': return 'bg-amber-400';
+      default: return 'bg-emerald-500';
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 bg-gradient-to-br from-primary-50 to-white min-h-screen">
-      {/* Back Button */}
-      <Link
-        to="/admin"
-        className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 mb-6 text-sm font-medium"
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        Back to Dashboard
-      </Link>
+    <div className="min-h-screen bg-[#fafafa]">
+      <AdminNavbar pageTitle="Budget Settings" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* Header */}
+        <div className="mb-8 pb-6 border-b border-gray-200">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-1 h-7 bg-primary-600 rounded-full"></div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Budget Settings</h1>
+          </div>
+          <p className="text-gray-500 text-sm ml-4">Configure monthly category budgets and spending thresholds</p>
+        </div>
 
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Budget Settings</h1>
-        <p className="text-gray-600">Configure monthly budgets and spending alerts</p>
-      </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Budget Form */}
+          <div className="lg:col-span-1">
+            <div className="bg-white border border-gray-200 rounded-sm shadow-sm sticky top-6">
+              {/* Form header accent */}
+              <div className="h-1 bg-primary-600 rounded-t-sm"></div>
+              <div className="p-6">
+                <h2 className="text-base font-bold text-gray-900 tracking-tight mb-5">
+                  {isEditing ? '✏️ Edit Budget' : '+ Set Budget Allocation'}
+                </h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Budget Form */}
-        <div className="lg:col-span-1">
-          <div className="card p-6 bg-white rounded-2xl shadow-sm border border-gray-100 sticky top-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-6">
-              {isEditing ? 'Edit Budget' : 'Set Budget Allocation'}
-            </h2>
+                <form onSubmit={handleSetBudget} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                      Category *
+                    </label>
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
+                    >
+                      <option value="">Select category...</option>
+                      {categories.map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
 
-            <form onSubmit={handleSetBudget} className="space-y-5">
-              {/* Category */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Category *
-                </label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="">Select category...</option>
-                  {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                      Month *
+                    </label>
+                    <input
+                      type="month"
+                      name="monthYear"
+                      value={formData.monthYear}
+                      onChange={handleInputChange}
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                      Budget Amount (₹) *
+                    </label>
+                    <input
+                      type="number"
+                      name="budgetAmount"
+                      value={formData.budgetAmount}
+                      onChange={handleInputChange}
+                      placeholder="0.00"
+                      step="0.01"
+                      min="0"
+                      className="w-full px-3 py-2 bg-white border border-gray-200 rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                      Alert Threshold — <span className="text-primary-600 font-bold">{formData.alertThreshold}%</span>
+                    </label>
+                    <input
+                      type="range"
+                      name="alertThreshold"
+                      value={formData.alertThreshold}
+                      onChange={handleInputChange}
+                      min="0"
+                      max="100"
+                      step="5"
+                      className="w-full accent-primary-600"
+                    />
+                    <p className="text-xs text-gray-400 mt-1">
+                      Alert triggers at {formData.alertThreshold}% of budget used
+                    </p>
+                  </div>
+
+                  <div className="space-y-2 pt-2">
+                    <button
+                      type="submit"
+                      className="w-full py-2 px-4 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-sm transition-colors"
+                    >
+                      {isEditing ? 'Update Budget' : 'Set Budget'}
+                    </button>
+                    {isEditing && (
+                      <button
+                        type="button"
+                        onClick={handleCancelEdit}
+                        className="w-full py-2 px-4 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-sm transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </form>
               </div>
+            </div>
+          </div>
 
-              {/* Month */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Month *
-                </label>
-                <input
-                  type="month"
-                  name="monthYear"
-                  value={formData.monthYear}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
+          {/* Budgets List */}
+          <div className="lg:col-span-2">
+            {loading && (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div>
+                <p className="text-gray-500 mt-4 text-sm">Loading budgets...</p>
               </div>
+            )}
 
-              {/* Budget Amount */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Budget Amount ($) *
-                </label>
-                <input
-                  type="number"
-                  name="budgetAmount"
-                  value={formData.budgetAmount}
-                  onChange={handleInputChange}
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-sm p-4">
+                <p className="text-red-700 text-sm">{error}</p>
               </div>
+            )}
 
-              {/* Alert Threshold */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Alert Threshold (%) *
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="range"
-                    name="alertThreshold"
-                    value={formData.alertThreshold}
-                    onChange={handleInputChange}
-                    min="0"
-                    max="100"
-                    step="5"
-                    className="flex-1"
-                  />
-                  <span className="text-sm font-medium bg-gray-100 px-3 py-1 rounded-lg">
-                    {formData.alertThreshold}%
-                  </span>
+            {!loading && !error && (
+              <>
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                    {new Date(`${formData.monthYear}-01`).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+                  </h2>
+                  <span className="text-xs text-gray-400">{budgets.length} {budgets.length === 1 ? 'budget' : 'budgets'}</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  Alert will trigger when spending reaches {formData.alertThreshold}% of budget
-                </p>
-              </div>
 
-              {/* Buttons */}
-              <div className="space-y-2">
-                <button
-                  type="submit"
-                  className="w-full btn-primary py-2 px-4 transition"
-                >
-                  {isEditing ? 'Update Budget' : 'Set Budget'}
-                </button>
-                {isEditing && (
-                  <button
-                    type="button"
-                    onClick={handleCancelEdit}
-                    className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition"
-                  >
-                    Cancel
-                  </button>
+                {budgets.length === 0 ? (
+                  <div className="bg-white border border-dashed border-gray-300 rounded-sm p-12 text-center">
+                    <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-700 font-semibold text-sm">No budgets set for this month</p>
+                    <p className="text-gray-400 text-xs mt-1">Use the form to allocate category budgets.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {budgets.map(budget => {
+                      const status = getBudgetStatus(budget);
+                      const percentage = Math.min((budget.currentSpending / budget.budgetAmount) * 100, 100);
+
+                      return (
+                        <div key={budget._id} className="bg-white border border-gray-200 rounded-sm shadow-sm hover:shadow-md transition-shadow">
+                          {/* Left accent bar based on status */}
+                          <div className={`h-1 rounded-t-sm ${status === 'EXCEEDED' ? 'bg-red-500' :
+                              status === 'WARNING' ? 'bg-amber-400' : 'bg-emerald-500'
+                            }`}></div>
+                          <div className="p-5">
+                            <div className="flex justify-between items-start mb-4">
+                              <div className="flex items-center gap-3">
+                                <div className={`p-2.5 rounded-sm ${getIconStyle(status)}`}>
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                </div>
+                                <div>
+                                  <h3 className="text-base font-bold text-gray-900">{budget.category}</h3>
+                                  <p className="text-xs text-gray-400 mt-0.5">Alert at {budget.alertThreshold}% usage</p>
+                                </div>
+                              </div>
+                              <span className={`px-2.5 py-1 text-xs font-bold uppercase tracking-wider rounded-sm ${getStatusStyle(status)}`}>
+                                {status}
+                              </span>
+                            </div>
+
+                            {/* Progress Bar */}
+                            <div className="mb-3">
+                              <div className="flex justify-between items-center mb-1.5">
+                                <span className="text-sm font-medium text-gray-700">
+                                  {formatCurrency(budget.currentSpending)}
+                                  <span className="text-gray-400 text-xs"> / {formatCurrency(budget.budgetAmount)}</span>
+                                </span>
+                                <span className="text-xs font-semibold text-gray-500">{Math.round(percentage)}%</span>
+                              </div>
+                              <div className="w-full bg-gray-100 h-1.5 rounded-full">
+                                <div
+                                  className={`h-1.5 rounded-full transition-all ${getBarColor(status)}`}
+                                  style={{ width: `${percentage}%` }}
+                                ></div>
+                              </div>
+                            </div>
+
+                            {/* Remaining */}
+                            <div className="mb-4 flex items-center justify-between p-3 bg-gray-50 border border-gray-100 rounded-sm">
+                              <span className="text-xs text-gray-500 font-medium">Remaining Budget</span>
+                              <span className={`text-sm font-bold ${status === 'EXCEEDED' ? 'text-red-600' : 'text-emerald-600'
+                                }`}>
+                                {formatCurrency(Math.max(0, budget.budgetAmount - budget.currentSpending))}
+                              </span>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleEditBudget(budget)}
+                                className="flex-1 py-1.5 px-3 text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 border border-primary-200 rounded-sm transition-colors"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => { setSelectedBudget(budget); setShowDeleteDialog(true); }}
+                                className="flex-1 py-1.5 px-3 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-sm transition-colors"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
-              </div>
-            </form>
+              </>
+            )}
           </div>
         </div>
-
-        {/* Budgets List */}
-        <div className="lg:col-span-2">
-          {loading && (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-              <p className="text-gray-600 mt-4">Loading budgets...</p>
-            </div>
-          )}
-
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-red-700">{error}</p>
-            </div>
-          )}
-
-          {!loading && !error && (
-            <>
-              {/* Month Display */}
-              <div className="mb-6">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Budgets for {new Date(`${formData.monthYear}-01`).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                  })}
-                </h2>
-              </div>
-
-              {budgets.length === 0 ? (
-                <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-12 text-center">
-                  <div className="mx-auto w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-                  </div>
-                  <p className="text-gray-800 font-semibold text-lg">No budget allocated for this month</p>
-                  <p className="text-gray-500 text-sm mt-1">Use the panel on the left to set category budgets.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {budgets.map(budget => {
-                    const status = getBudgetStatus(budget);
-                    const percentage = (budget.currentSpending / budget.budgetAmount) * 100;
-
-                    return (
-                      <div key={budget._id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 transition hover:shadow-md">
-                        <div className="flex justify-between items-start mb-6">
-                          <div className="flex items-center gap-4">
-                            <div className={`p-3 rounded-xl ${
-                              status === 'EXCEEDED' ? 'bg-red-50 text-red-600' :
-                              status === 'WARNING' ? 'bg-yellow-50 text-yellow-600' :
-                              'bg-green-50 text-green-600'
-                            }`}>
-                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            </div>
-                            <div>
-                              <h3 className="text-lg font-bold text-gray-900">{budget.category}</h3>
-                              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mt-1">
-                                Alert at {budget.alertThreshold}% usage
-                              </p>
-                            </div>
-                          </div>
-                          <span className={`px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full ${getStatusColor(status)}`}>
-                            {status}
-                          </span>
-                        </div>
-
-                        {/* Progress Bar */}
-                        <div className="mb-4">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-medium text-gray-700">
-                              {formatCurrency(budget.currentSpending)} / {formatCurrency(budget.budgetAmount)}
-                            </span>
-                            <span className="text-sm text-gray-600">
-                              {Math.round(percentage)}%
-                            </span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                              className={`h-2 rounded-full transition-all ${
-                                status === 'EXCEEDED' ? 'bg-red-600' :
-                                status === 'WARNING' ? 'bg-yellow-500' :
-                                'bg-green-500'
-                              }`}
-                              style={{ width: `${Math.min(percentage, 100)}%` }}
-                            ></div>
-                          </div>
-                        </div>
-
-                        {/* Remaining Budget */}
-                        <div className="mb-4 p-3 bg-primary-50 rounded-lg">
-                          <p className="text-sm text-primary-700">
-                            <span className="font-medium">Remaining:</span> {formatCurrency(Math.max(0, budget.budgetAmount - budget.currentSpending))}
-                          </p>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleEditBudget(budget)}
-                            className="flex-1 bg-primary-100 hover:bg-primary-200 text-primary-700 font-medium py-2 px-4 rounded-lg transition text-sm"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedBudget(budget);
-                              setShowDeleteDialog(true);
-                            }}
-                            className="flex-1 bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 px-4 rounded-lg transition text-sm"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          )}
-        </div>
       </div>
 
-      {/* Delete Confirmation */}
       {showDeleteDialog && selectedBudget && (
         <DeleteConfirmDialog
           title="Delete Budget"
           message={`Are you sure you want to delete the budget for ${selectedBudget.category} in ${selectedBudget.monthYear}? This action cannot be undone.`}
           onConfirm={handleDeleteBudget}
-          onCancel={() => {
-            setShowDeleteDialog(false);
-            setSelectedBudget(null);
-          }}
+          onCancel={() => { setShowDeleteDialog(false); setSelectedBudget(null); }}
         />
       )}
     </div>

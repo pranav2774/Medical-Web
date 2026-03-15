@@ -58,13 +58,13 @@ const UserProfile = () => {
 
     try {
       const response = await apiClient.put('/auth/profile', formData);
-      
+
       if (response.data.success) {
         const updatedUser = response.data.user;
         localStorage.setItem('user', JSON.stringify(updatedUser));
         setUser(updatedUser);
         setSuccess('Profile updated successfully!');
-        
+
         setTimeout(() => {
           navigate(user?.role === 'admin' ? '/admin' : '/dashboard');
         }, 1500);

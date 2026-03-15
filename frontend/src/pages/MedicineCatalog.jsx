@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PublicMedicineCard from '../components/PublicMedicineCard';
 import { getPublicMedicines } from '../utils/publicMedicineService';
 import logoImg from '../assets/logo.png';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
+import Footer from '../components/Footer';
+import HeroCapsule3D from '../components/HeroCapsule3D';
 
 const MedicineCatalog = () => {
     const navigate = useNavigate();
@@ -12,6 +14,7 @@ const MedicineCatalog = () => {
     const [medicines, setMedicines] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const catalogRef = useRef(null);
 
     // Filter and search states
     const [searchQuery, setSearchQuery] = useState('');
@@ -111,10 +114,14 @@ const MedicineCatalog = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const scrollToCatalog = () => {
+        catalogRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-            {/* Navbar - matching admin style */}
-            <nav className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="min-h-screen bg-[#fafafa] flex flex-col">
+            {/* Navbar */}
+            <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
                 <div className="max-w-full px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
                         <div className="flex items-center gap-2 sm:gap-3">
@@ -136,7 +143,7 @@ const MedicineCatalog = () => {
                             </Link>
                             <button
                                 onClick={() => navigate('/login')}
-                                className="btn-primary text-xs sm:text-sm px-3 sm:px-6 py-1 sm:py-2"
+                                className="px-5 py-2 text-sm font-medium text-white bg-gray-900 border border-transparent rounded hover:bg-gray-800 transition-colors"
                             >
                                 Sign In
                             </button>
@@ -145,99 +152,141 @@ const MedicineCatalog = () => {
                 </div>
             </nav>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-                {/* Search and Filters */}
-                <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
-                    {/* Search Bar */}
-                    <div className="mb-4">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                placeholder="Search medicines by name or manufacturer..."
-                                value={searchQuery}
-                                onChange={handleSearchChange}
-                                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm sm:text-base"
-                            />
-                            <svg
-                                className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                />
-                            </svg>
-                        </div>
-                    </div>
+            {/* Hero Section */}
+            <div className="bg-white border-b border-gray-200">
+                {/* Top accent strip */}
+                <div className="h-1 bg-gradient-to-r from-primary-500 via-primary-400 to-primary-600"></div>
 
-                    {/* Filters Row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                        {/* Category Filter */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Category</label>
-                            <select
-                                value={category}
-                                onChange={handleCategoryChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
-                            >
-                                {categories.map(cat => (
-                                    <option key={cat.value} value={cat.value}>{cat.label}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Stock Filter */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Availability</label>
-                            <select
-                                value={stockStatus}
-                                onChange={handleStockFilterChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
-                            >
-                                {stockFilters.map(filter => (
-                                    <option key={filter.value} value={filter.value}>{filter.label}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Sort Options */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">Sort By</label>
-                            <select
-                                value={`${sortBy}-${sortOrder}`}
-                                onChange={handleSortChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
-                            >
-                                {sortOptions.map(option => (
-                                    <option key={option.value} value={option.value}>{option.label}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* Results Count */}
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                        <p className="text-sm text-gray-600">
-                            {loading ? 'Loading...' : `Showing ${medicines.length} of ${total} medicines`}
+                {/* Split hero layout */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                    {/* Left: Text */}
+                    <div>
+                        <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-5 leading-tight">
+                            Your Health,{' '}
+                            <span className="text-primary-600">Delivered</span>
+                            <br /> with Trust.
+                        </h1>
+                        <p className="text-base sm:text-lg text-gray-500 mb-8 max-w-md">
+                            Premium medical supplies and authentic medicines at your fingertips.
+                            Experience a modernized pharmacy designed for your convenience.
                         </p>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <button
+                                onClick={() => navigate('/login')}
+                                className="px-7 py-3 bg-primary-600 text-white text-sm font-semibold rounded-sm shadow-sm hover:bg-primary-700 transition-colors flex items-center gap-2"
+                            >
+                                Sign In / Register
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            <button
+                                onClick={scrollToCatalog}
+                                className="px-7 py-3 bg-white text-gray-700 text-sm font-semibold rounded-sm border border-gray-300 shadow-sm hover:bg-gray-50 transition-colors"
+                            >
+                                Browse Catalog ↓
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Right: 3D Capsule */}
+                    <div className="hidden lg:flex items-center justify-center" style={{ height: 320 }}>
+                        <Suspense fallback={null}>
+                            <HeroCapsule3D />
+                        </Suspense>
+                    </div>
+                </div>
+
+            </div>
+
+            <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full" ref={catalogRef}>
+                {/* Search and Filters */}
+                <div className="mb-10">
+                    <div className="bg-white border border-gray-200 rounded-sm shadow-sm p-4 mb-5">
+                        <div className="flex flex-col lg:flex-row lg:items-end gap-4">
+                            {/* Search Bar */}
+                            <div className="relative flex-1">
+                                <svg
+                                    className="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input
+                                    type="text"
+                                    placeholder="Search medicines by name or manufacturer..."
+                                    value={searchQuery}
+                                    onChange={handleSearchChange}
+                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-200 bg-white rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-colors"
+                                />
+                            </div>
+
+                            <div className="flex flex-wrap items-end gap-3">
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Category</label>
+                                    <select
+                                        value={category}
+                                        onChange={handleCategoryChange}
+                                        className="px-3 py-2.5 border border-gray-200 bg-white rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
+                                    >
+                                        {categories.map(cat => (
+                                            <option key={cat.value} value={cat.value}>{cat.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Stock</label>
+                                    <select
+                                        value={stockStatus}
+                                        onChange={handleStockFilterChange}
+                                        className="px-3 py-2.5 border border-gray-200 bg-white rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
+                                    >
+                                        {stockFilters.map(filter => (
+                                            <option key={filter.value} value={filter.value}>{filter.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Sort</label>
+                                    <select
+                                        value={`${sortBy}-${sortOrder}`}
+                                        onChange={handleSortChange}
+                                        className="px-3 py-2.5 border border-gray-200 bg-white rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm"
+                                    >
+                                        {sortOptions.map(option => (
+                                            <option key={option.value} value={option.value}>{option.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Results count */}
+                    <div className="flex items-center justify-between text-sm text-gray-500 border-b border-gray-200 pb-3">
+                        <span>{loading ? 'Searching...' : `${total} products found`}</span>
+                        {(searchQuery || category !== 'all' || stockStatus !== 'all') && (
+                            <button
+                                onClick={() => { setSearchQuery(''); setCategory('all'); setStockStatus('all'); setPage(1); }}
+                                className="text-primary-600 hover:text-primary-700 font-medium text-xs transition-colors"
+                            >
+                                Clear filters ×
+                            </button>
+                        )}
                     </div>
                 </div>
 
                 {/* Loading State */}
                 {loading && (
-                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                         {[...Array(8)].map((_, i) => (
-                            <div key={i} className="card overflow-hidden animate-pulse">
-                                <div className="h-48 bg-gray-200"></div>
-                                <div className="p-4">
-                                    <div className="h-6 bg-gray-200 rounded mb-2"></div>
-                                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-                                    <div className="h-8 bg-gray-200 rounded w-1/2"></div>
-                                </div>
+                            <div key={i} className="bg-white border border-gray-100 rounded-sm p-4 animate-pulse">
+                                <div className="h-40 bg-gray-100 mb-4 rounded-sm"></div>
+                                <div className="h-4 bg-gray-100 rounded w-3/4 mb-2"></div>
+                                <div className="h-4 bg-gray-100 rounded w-1/2 mb-4"></div>
+                                <div className="h-8 bg-gray-100 rounded w-full"></div>
                             </div>
                         ))}
                     </div>
@@ -344,9 +393,10 @@ const MedicineCatalog = () => {
                         )}
                     </>
                 )}
-            </div>
+            </main>
 
-
+            {/* Footer */}
+            <Footer />
         </div>
     );
 };

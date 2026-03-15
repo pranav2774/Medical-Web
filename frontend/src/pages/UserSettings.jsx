@@ -36,7 +36,7 @@ const UserSettings = () => {
       setLoading(true);
       const currentUser = authService.getCurrentUser();
       setUser(currentUser);
-      
+
       // Load settings from localStorage or API
       const savedSettings = localStorage.getItem('userSettings');
       if (savedSettings) {
@@ -75,7 +75,7 @@ const UserSettings = () => {
 
     try {
       const response = await apiClient.put('/auth/settings', { settings });
-      
+
       if (response.data.success) {
         localStorage.setItem('userSettings', JSON.stringify(settings));
         setSuccess('Settings saved successfully!');
@@ -109,7 +109,7 @@ const UserSettings = () => {
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
       });
-      
+
       if (response.data.success) {
         setSuccess('Password changed successfully!');
         setPasswordData({
@@ -219,7 +219,7 @@ const UserSettings = () => {
             {/* Notification Settings */}
             <div className="card p-6 sm:p-8">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Notification Preferences</h2>
-              
+
               <form onSubmit={handleSaveSettings} className="space-y-4">
                 <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                   <div>
@@ -287,7 +287,7 @@ const UserSettings = () => {
             {/* Theme Settings */}
             <div className="card p-6 sm:p-8">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Appearance</h2>
-              
+
               <div className="space-y-4">
                 <div>
                   <label htmlFor="theme" className="block text-sm font-semibold text-gray-900 mb-2">

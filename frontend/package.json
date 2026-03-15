@@ -16,7 +16,8 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
     "recharts": "^3.8.0",
-    "sonner": "^2.0.7"
+    "sonner": "^2.0.7",
+    "three": "^0.183.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

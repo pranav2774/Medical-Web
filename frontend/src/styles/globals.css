@@ -17,18 +17,18 @@ body {
 /* Custom components */
 @layer components {
   .btn-primary {
-    @apply px-6 py-2 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 cursor-pointer;
+    @apply px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-sm border border-transparent hover:bg-primary-700 transition-colors duration-200 cursor-pointer shadow-sm;
   }
 
   .btn-secondary {
-    @apply px-6 py-2 bg-white text-primary-600 border-2 border-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 cursor-pointer;
+    @apply px-4 py-2 bg-white text-primary-600 text-sm font-medium border border-primary-200 rounded-sm hover:bg-primary-50 transition-colors duration-200 cursor-pointer shadow-sm;
   }
 
   .form-input {
-    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all duration-200;
+    @apply w-full px-3 py-2 text-sm border border-gray-200 rounded-sm focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors duration-200 bg-white placeholder-gray-400;
   }
 
   .card {
-    @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200;
+    @apply bg-white rounded-sm border border-gray-200 shadow-sm transition-all duration-200 hover:border-gray-300;
   }
 }

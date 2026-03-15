@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { userService } from '../utils/userService';
 import { authService } from '../utils/authService';
 import logoImg from '../assets/logo.png';
+import AdminNavbar from '../components/AdminNavbar';
 
 const CustomerManagement = () => {
     const [user, setUser] = useState(null);
@@ -102,35 +103,10 @@ const CustomerManagement = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white">
-            {/* Navbar */}
-            <nav className="bg-white shadow-sm sticky top-0 z-50">
-                <div className="max-w-full px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center gap-2 sm:gap-3">
-                            <Link to="/admin" className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition">
-                                <img src={logoImg} alt="Morya Medical Logo" className="h-10 w-10 sm:h-12 sm:w-12" />
-                                <div className="text-xl sm:text-2xl font-bold text-primary-600">Morya Medical</div>
-                            </Link>
-                            <div className="hidden sm:block text-sm font-semibold text-primary-600 bg-primary-100 px-3 py-1 rounded-full">
-                                Admin Panel
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2 sm:gap-4">
-                            <span className="hidden sm:inline text-gray-600 text-sm">Welcome, {user?.name}!</span>
-                            <button
-                                onClick={handleLogout}
-                                className="btn-primary text-xs sm:text-sm px-3 sm:px-6 py-1 sm:py-2"
-                            >
-                                Logout
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
+        <div className="min-h-screen bg-[#fafafa] flex flex-col">
+            <AdminNavbar user={user} pageTitle="Customer Management" />
             {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full">
                 {/* Back Button */}
                 <Link
                     to="/admin"
@@ -152,7 +128,7 @@ const CustomerManagement = () => {
                         <button
                             onClick={exportToCSV}
                             disabled={filteredCustomers.length === 0}
-                            className="btn-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-4 py-2 text-sm font-medium text-white bg-gray-900 border border-transparent rounded-sm hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -162,7 +138,7 @@ const CustomerManagement = () => {
                     </div>
 
                     {/* Search */}
-                    <div className="card p-4">
+                    <div className="bg-white p-4 border border-gray-200 rounded-sm shadow-sm">
                         <div className="flex items-center gap-2">
                             <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -172,7 +148,7 @@ const CustomerManagement = () => {
                                 placeholder="Search by name, email, or phone..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                className="flex-1 px-4 py-2 border border-gray-200 bg-white rounded-sm focus:outline-none focus:ring-1 focus:ring-primary-500 text-sm transition-colors"
                             />
                         </div>
                     </div>
@@ -198,10 +174,10 @@ const CustomerManagement = () => {
 
                 {/* Customer Table */}
                 {!loading && !error && (
-                    <div className="card overflow-hidden">
+                    <div className="bg-white border border-gray-200 rounded-sm shadow-sm overflow-hidden mt-6">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm min-w-max">
-                                <thead className="bg-gray-50 border-b">
+                                <thead className="bg-gray-50 border-b border-gray-200">
                                     <tr>
                                         <th className="px-3 sm:px-4 py-3 text-left text-gray-700 font-semibold whitespace-nowrap">Name</th>
                                         <th className="px-3 sm:px-4 py-3 text-left text-gray-700 font-semibold whitespace-nowrap">Email</th>
