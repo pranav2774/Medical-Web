@@ -77,27 +77,27 @@ const Footer = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 <span className="text-sm text-gray-400 leading-relaxed">
-                                    [Store Address Line 1]<br />
-                                    [City, State, PIN Code]
+                                    Morya Medical, Shop no. 7, Tejas Complex, Limbadevi Phata, Ukhanda <br />
+                                    Beed, Maharastra, 414205
                                 </span>
                             </li>
                             <li className="flex items-center gap-2.5">
                                 <svg className="h-4 w-4 text-primary-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                 </svg>
-                                <span className="text-sm text-gray-400">[Phone Number]</span>
+                                <span className="text-sm text-gray-400">+91 9637685171</span>
                             </li>
                             <li className="flex items-center gap-2.5">
                                 <svg className="h-4 w-4 text-primary-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
-                                <span className="text-sm text-gray-400">[Email Address]</span>
+                                <span className="text-sm text-gray-400">sonsalesunil5@gmail.com</span>
                             </li>
                         </ul>
 
                         {/* Map placeholder box */}
                         <div className="mt-5 p-3 bg-gray-800 border border-gray-700 rounded-sm text-xs text-gray-500 italic">
-                            📍 Map embed coming soon
+                            <a href="https://maps.app.goo.gl/NftckrCSXRMPwbBE8" target="_blank" onhover="cursor:pointer">📍View on Google Maps</a>
                         </div>
                     </div>
                 </div>
@@ -108,7 +108,7 @@ const Footer = () => {
                         &copy; {new Date().getFullYear()} Morya Medical. All rights reserved.
                     </p>
                     <p className="text-xs text-gray-700 tracking-widest uppercase">
-                        Developed by <span className="text-primary-500 font-semibold">Your Name / Team</span>
+                        Developed by <span className="text-primary-500 font-semibold"><a href="https://github.com/vparankar" target="_blank">vedant p</a>&nbsp;<a href="https://github.com/pranav2774" target="_blank">, pranav v, </a>&nbsp;<a href="https://github.com/surajkhomane108" target="_blank">suraj k</a></span>
                     </p>
                     <div className="flex gap-5">
                         <a href="#" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Privacy Policy</a>
