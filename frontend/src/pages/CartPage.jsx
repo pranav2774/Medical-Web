@@ -113,7 +113,19 @@ const CartPage = () => {
                     </button>
                 </div>
 
+                {/* Pickup Disclaimer */}
+                <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg flex gap-3">
+                    <svg className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div className="text-sm text-amber-800">
+                        <p className="font-semibold mb-0.5">In-store pickup only</p>
+                        <p className="text-xs leading-relaxed">This is a <strong>pre-order</strong> for pickup at Morya Medical, Beed. No medicines are dispatched by delivery. Prescription medicines will be <strong>physically verified</strong> by our registered pharmacist at pickup. Orders are subject to stock availability confirmation.</p>
+                    </div>
+                </div>
+
                 {error && (
+
                     <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 text-sm">
                         {error}
                     </div>

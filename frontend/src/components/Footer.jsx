@@ -16,14 +16,13 @@ const Footer = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-8 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
                     {/* Brand Column */}
-                    <div className="md:col-span-5">
+                    <div className="md:col-span-4">
                         <div className="flex items-center gap-2 mb-4">
                             <img src={logoImg} alt="Morya Medical Logo" className="h-8 w-8 brightness-[1.5]" />
                             <div className="text-lg font-bold text-white tracking-tight">Morya Medical</div>
                         </div>
-                        <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-sm">
-                            Providing authentic, high-quality medicines with a commitment to health and well-being.
-                            Your trusted neighborhood pharmacy, now online.
+                        <p className="text-sm text-gray-400 leading-relaxed mb-4 max-w-sm">
+                            Licensed retail pharmacy in Beed, Maharashtra. This platform is a <strong className="text-gray-300">pre-order pickup system</strong> — browse our catalog and place orders for in-store collection. All medicines are dispensed by our registered pharmacist.
                         </p>
                         {/* Hours */}
                         <div className="flex items-start gap-2 mb-3">
@@ -68,8 +67,8 @@ const Footer = () => {
                     </div>
 
                     {/* Contact */}
-                    <div className="md:col-span-5">
-                        <h3 className="text-xs font-semibold text-gray-300 tracking-widest uppercase mb-4">Contact & Location</h3>
+                    <div className="md:col-span-3">
+                        <h3 className="text-xs font-semibold text-gray-300 tracking-widest uppercase mb-4">Contact &amp; Location</h3>
                         <ul className="space-y-3">
                             <li className="flex gap-2.5">
                                 <svg className="h-4 w-4 text-primary-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,15 +76,15 @@ const Footer = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 <span className="text-sm text-gray-400 leading-relaxed">
-                                    Morya Medical, Shop no. 7, Tejas Complex, Limbadevi Phata, Ukhanda <br />
-                                    Beed, Maharastra, 414205
+                                    Shop No. 7, Tejas Complex, Limbadevi Phata, Ukhanda<br />
+                                    Beed, Maharashtra – 414205
                                 </span>
                             </li>
                             <li className="flex items-center gap-2.5">
                                 <svg className="h-4 w-4 text-primary-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                 </svg>
-                                <span className="text-sm text-gray-400">+91 9637685171</span>
+                                <span className="text-sm text-gray-400">+91 96376 85171</span>
                             </li>
                             <li className="flex items-center gap-2.5">
                                 <svg className="h-4 w-4 text-primary-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -94,25 +93,41 @@ const Footer = () => {
                                 <span className="text-sm text-gray-400">sonsalesunil5@gmail.com</span>
                             </li>
                         </ul>
-
-                        {/* Map placeholder box */}
                         <div className="mt-5 p-3 bg-gray-800 border border-gray-700 rounded-sm text-xs text-gray-500 italic">
-                            <a href="https://maps.app.goo.gl/NftckrCSXRMPwbBE8" target="_blank" onhover="cursor:pointer">📍View on Google Maps</a>
+                            <a href="https://maps.app.goo.gl/NftckrCSXRMPwbBE8" target="_blank" rel="noopener noreferrer">📍 View on Google Maps</a>
+                        </div>
+                    </div>
+
+                    {/* Grievance Officer */}
+                    <div className="md:col-span-3">
+                        <h3 className="text-xs font-semibold text-gray-300 tracking-widest uppercase mb-4">Store Owner</h3>
+                        <div className="text-sm text-gray-400 space-y-1.5">
+                            <p className="text-gray-300 font-medium">Sunil Sonsale</p>
+                            <p>sonsalesunil5@gmail.com</p>
+                            <p>+91 96376 85171</p>
+                            <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                                Consumer complaints acknowledged within <span className="text-gray-500">48 hours</span> and resolved within <span className="text-gray-500">30 days</span> as per the Consumer Protection Act, 2019.
+                            </p>
                         </div>
                     </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="pt-6 border-t border-gray-800 flex flex-wrap items-center justify-between gap-y-2">
+                <div className="pt-6 border-t border-gray-800 flex flex-wrap items-center justify-between gap-y-3">
                     <p className="text-xs text-gray-600">
-                        &copy; {new Date().getFullYear()} Morya Medical. All rights reserved.
+                        &copy; {new Date().getFullYear()} Morya Medical. All rights reserved. Licensed Retail Pharmacy.
                     </p>
                     <p className="text-xs text-gray-700 tracking-widest uppercase">
-                        Developed by <span className="text-primary-500 font-semibold"><a href="https://github.com/vparankar" target="_blank">vedant p</a>&nbsp;<a href="https://github.com/pranav2774" target="_blank">, pranav v, </a>&nbsp;<a href="https://github.com/surajkhomane108" target="_blank">suraj k</a></span>
+                        Developed by <span className="text-primary-500 font-semibold">
+                            <a href="https://github.com/vparankar" target="_blank" rel="noopener noreferrer">vedant p</a>&nbsp;
+                            <a href="https://github.com/pranav2774" target="_blank" rel="noopener noreferrer">, pranav v, </a>&nbsp;
+                            <a href="https://github.com/surajkhomane108" target="_blank" rel="noopener noreferrer">suraj k</a>
+                        </span>
                     </p>
                     <div className="flex gap-5">
-                        <a href="#" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Privacy Policy</a>
-                        <a href="#" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Terms of Use</a>
+                        <Link to="/privacy-policy" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Privacy Policy</Link>
+                        <Link to="/terms-of-use" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Terms of Use</Link>
+                        <Link to="/cancellation-policy" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Cancellation Policy</Link>
                     </div>
                 </div>
             </div>

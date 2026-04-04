@@ -486,3 +486,39 @@ exports.resendVerification = async (req, res) => {
     });
   }
 };
+
+// @desc    Delete account (DPDP Act 2023 — Right to Erasure)
+// @route   DELETE /api/auth/account
+// @access  Private
+exports.deleteAccount = async (req, res) => {
+  try {
+    const Order = require('../models/Order');
+
+    // Anonymize the user's orders — preserve medical records structure but remove PII
+    await Order.updateMany(
+      { patientId: req.user.id },
+      {
+        $set: {
+          patientId: null,
+          phone: 'DELETED',
+          notes: null,
+          prescriptionImageUrl: null,
+        },
+      }
+    );
+
+    // Delete the user account
+    await require('../models/User').findByIdAndDelete(req.user.id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Your account and personal data have been permanently deleted.',
+    });
+  } catch (error) {
+    console.error('Delete account error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Server error during account deletion',
+    });
+  }
+};

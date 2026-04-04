@@ -26,6 +26,8 @@ const UserSettings = () => {
   });
 
   const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     fetchUserSettings();
@@ -123,6 +125,19 @@ const UserSettings = () => {
       setError(err.response?.data?.message || 'Failed to change password');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    try {
+      await apiClient.delete('/auth/account');
+      localStorage.clear();
+      window.location.href = '/login';
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to delete account. Please try again.');
+      setShowDeleteConfirm(false);
+      setDeletingAccount(false);
     }
   };
 
@@ -392,6 +407,49 @@ const UserSettings = () => {
                     </button>
                   </div>
                 </form>
+              )}
+            </div>
+
+            {/* Danger Zone */}
+            <div className="card p-6 sm:p-8 border border-red-200">
+              <h2 className="text-xl font-bold text-red-700 mb-2">Danger Zone</h2>
+              <p className="text-sm text-gray-500 mb-6">
+                Permanently delete your account and all associated personal data. This action is irreversible and cannot be undone. Your order records will be anonymized and retained for 5 years as required by pharmaceutical regulations.
+              </p>
+
+              {!showDeleteConfirm ? (
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="px-6 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition font-medium text-sm"
+                >
+                  Delete My Account
+                </button>
+              ) : (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-sm font-semibold text-red-800 mb-1">Are you absolutely sure?</p>
+                  <p className="text-xs text-red-600 mb-4">
+                    Your account, name, email, phone, address and prescription images will be permanently deleted. This cannot be reversed.
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={handleDeleteAccount}
+                      disabled={deletingAccount}
+                      className="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {deletingAccount ? 'Deleting...' : 'Yes, delete my account'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteConfirm(false)}
+                      disabled={deletingAccount}
+                      className="px-5 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           </div>
