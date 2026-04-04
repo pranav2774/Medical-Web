@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
+import ProductDetailsModal from './ProductDetailsModal';
 
 const PublicMedicineCard = ({ medicine }) => {
     const { addToCart, updateQuantity, getCartItem } = useCart();
+    const [isModalOpen, setIsModalOpen] = useState(false);
     
     // Check if item is in cart and its quantity
     const cartItem = getCartItem(medicine._id);
@@ -30,7 +32,11 @@ const PublicMedicineCard = ({ medicine }) => {
     };
 
     return (
-        <div className="bg-white border border-gray-200 rounded-sm h-full flex flex-col overflow-hidden transition-colors duration-200 hover:border-gray-300">
+        <>
+        <div 
+            className="bg-white border border-gray-200 rounded-sm h-full flex flex-col overflow-hidden transition-colors duration-200 hover:border-gray-300 cursor-pointer"
+            onClick={() => setIsModalOpen(true)}
+        >
             {/* Image */}
             <div className="h-28 sm:h-44 bg-gray-50 flex items-center justify-center overflow-hidden relative border-b border-gray-100">
                 {medicine.image ? (
@@ -149,6 +155,12 @@ const PublicMedicineCard = ({ medicine }) => {
                 </div>
             </div>
         </div>
+        <ProductDetailsModal 
+            medicine={medicine} 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)} 
+        />
+        </>
     );
 };
 
