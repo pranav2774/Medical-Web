@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const hpp = require('hpp');
 require('dotenv').config();
 
 const connectDB = require('./config/database');
@@ -10,23 +12,59 @@ connectDB();
 
 const app = express();
 
-// Middleware
-app.use(helmet()); // Security headers
-// Support multiple origins (e.g. "https://app.vercel.app,http://localhost:5173") for local testing when live
+// ─── Security Headers (Helmet with explicit CSP) ─────────────────────────────
 const allowedOrigins = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map((o) => o.trim()).filter(Boolean)
   : ['http://localhost:5173'];
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        imgSrc: ["'self'", 'data:', 'https://ik.imagekit.io'],
+        connectSrc: ["'self'", ...allowedOrigins],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
+      },
+    },
+    crossOriginEmbedderPolicy: false, // allow ImageKit images
+  })
+);
+
+// ─── CORS ─────────────────────────────────────────────────────────────────────
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    return cb(null, allowedOrigins[0]);
+    return cb(null, false);
   },
   credentials: true,
 }));
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Routes
+// ─── Body Parsers (tight limits to prevent DoS) ───────────────────────────────
+// Large limit only for the prescription image upload (base64 in JSON body).
+// All other routes get 1 mb.
+app.use((req, res, next) => {
+  if (req.path === '/api/orders' && req.method === 'POST') {
+    express.json({ limit: '15mb' })(req, res, next);
+  } else {
+    express.json({ limit: '1mb' })(req, res, next);
+  }
+});
+app.use(express.urlencoded({ limit: '1mb', extended: true }));
+
+// ─── NoSQL Injection Sanitization ────────────────────────────────────────────
+// Strips $ and . operators from req.body, req.query, req.params
+app.use(mongoSanitize());
+
+// ─── HTTP Parameter Pollution Protection ─────────────────────────────────────
+app.use(hpp());
+
+// ─── Routes ───────────────────────────────────────────────────────────────────
 const authRoutes = require('./routes/auth');
 const medicineRoutes = require('./routes/medicines');
 const userRoutes = require('./routes/users');
@@ -35,7 +73,6 @@ const orderRoutes = require('./routes/orders');
 const expenseRoutes = require('./routes/expenses');
 const dashboardRoutes = require('./routes/dashboard');
 
-// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/medicines', medicineRoutes);
 app.use('/api/users', userRoutes);
@@ -44,45 +81,36 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// Health check route
+// ─── Health Check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Server is running',
-  });
+  res.status(200).json({ success: true, message: 'Server is running' });
 });
 
-// 404 handler
+// ─── 404 Handler ──────────────────────────────────────────────────────────────
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found',
-  });
+  res.status(404).json({ success: false, message: 'Route not found' });
 });
 
-// Error handling middleware
+// ─── Global Error Handler ─────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-
   res.status(err.status || 500).json({
     success: false,
     message: err.message || 'Server error',
-    error: process.env.NODE_ENV === 'development' ? err : {},
+    // Never expose stack traces in production
+    ...(process.env.NODE_ENV === 'development' && { error: err }),
   });
 });
 
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
 
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-  console.log(`Error: ${err.message}`);
-  server.close(() => {
-    process.exit(1);
-  });
+process.on('unhandledRejection', (err) => {
+  console.error(`Unhandled rejection: ${err.message}`);
+  server.close(() => process.exit(1));
 });
 
 module.exports = app;

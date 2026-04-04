@@ -18,6 +18,9 @@ import AdminExpenses from './pages/AdminExpenses';
 import BudgetSettings from './pages/BudgetSettings';
 import ExpenseAnalytics from './pages/ExpenseAnalytics';
 import EnvIndicator from './components/EnvIndicator';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfUse from './pages/TermsOfUse';
+import CancellationPolicy from './pages/CancellationPolicy';
 import { authService } from './utils/authService';
 import { CartProvider } from './context/CartContext';
 
@@ -36,6 +39,9 @@ const App = () => {
           <Route path="/medicines" element={<MedicineCatalog />} />
           <Route path="/login" element={<Login />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-use" element={<TermsOfUse />} />
+          <Route path="/cancellation-policy" element={<CancellationPolicy />} />
 
           {/* Private Routes */}
           <Route path="/dashboard" element={<PrivateRoute><UserMedicineStore /></PrivateRoute>} />

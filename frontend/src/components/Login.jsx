@@ -11,6 +11,7 @@ const Login = () => {
   const [success, setSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState({
     minLength: false,
     hasUpperCase: false,
@@ -101,6 +102,11 @@ const Login = () => {
         setError('Please enter a valid email address');
         return false;
       }
+
+      if (!consentChecked) {
+        setError('You must agree to the Privacy Policy and Terms of Use to create an account.');
+        return false;
+      }
     }
 
     return true;
@@ -178,6 +184,7 @@ const Login = () => {
     });
     setError('');
     setSuccess('');
+    setConsentChecked(false);
   };
 
   return (
@@ -406,7 +413,27 @@ const Login = () => {
               </div>
             )}
 
+            {/* Consent Checkbox - Only for Register */}
+            {!isLogin && (
+              <div className="flex items-start gap-3 p-3 bg-blue-50 border border-blue-100 rounded-lg">
+                <input
+                  id="consent"
+                  type="checkbox"
+                  checked={consentChecked}
+                  onChange={(e) => { setConsentChecked(e.target.checked); setError(''); }}
+                  className="mt-0.5 h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer shrink-0"
+                />
+                <label htmlFor="consent" className="text-xs text-gray-700 leading-relaxed cursor-pointer">
+                  I have read and agree to the{' '}
+                  <Link to="/privacy-policy" target="_blank" className="text-primary-600 font-medium underline">Privacy Policy</Link>{' '}and{' '}
+                  <Link to="/terms-of-use" target="_blank" className="text-primary-600 font-medium underline">Terms of Use</Link>.
+                  My data will be used to manage my account and pickup orders.
+                </label>
+              </div>
+            )}
+
             {/* Submit Button */}
+
             <button
               type="submit"
               disabled={loading}
@@ -461,14 +488,9 @@ const Login = () => {
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-500 mt-4 sm:mt-6">
-          By continuing, you agree to our{' '}
-          <span className="text-primary-600 cursor-pointer hover:underline">
-            Terms of Service
-          </span>{' '}
-          and{' '}
-          <span className="text-primary-600 cursor-pointer hover:underline">
-            Privacy Policy
-          </span>
+          By signing in, you agree to our{' '}
+          <Link to="/terms-of-use" className="text-primary-600 hover:underline">Terms of Use</Link>{' '}and{' '}
+          <Link to="/privacy-policy" className="text-primary-600 hover:underline">Privacy Policy</Link>.
         </p>
       </div>
     </div>
