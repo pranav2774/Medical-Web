@@ -10,6 +10,8 @@ const {
   verifyEmail,
   resendVerification,
   deleteAccount,
+  forgotPassword,
+  resetPassword,
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 const { authLimiter, otpLimiter, resendVerificationLimiter } = require('../middleware/rateLimitAuth');
@@ -20,6 +22,8 @@ const router = express.Router();
 // Rate limit login and register to prevent brute force
 router.post('/register', authLimiter, registerValidation, validate, register);
 router.post('/login', authLimiter, loginValidation, validate, login);
+router.post('/forgot-password', authLimiter, forgotPassword);
+router.post('/reset-password', authLimiter, resetPassword);
 // OTP endpoint gets its own strict limiter (5 attempts / 15 min)
 router.post('/verify-email', otpLimiter, verifyEmail);
 router.post('/resend-verification', resendVerificationLimiter, resendVerification);

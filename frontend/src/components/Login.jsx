@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../utils/authService';
+import ForgotPasswordModal from './ForgotPasswordModal';
 import '../styles/globals.css';
 
 const Login = () => {
@@ -11,6 +12,7 @@ const Login = () => {
   const [success, setSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState({
     minLength: false,
@@ -312,7 +314,10 @@ const Login = () => {
                 </button>
               </div>
               {isLogin && (
-                <p className="text-right text-xs text-primary-600 hover:text-primary-700 mt-1 cursor-pointer">
+                <p 
+                  onClick={() => setIsForgotPasswordOpen(true)}
+                  className="text-right text-xs text-primary-600 hover:text-primary-700 mt-1 cursor-pointer inline-block float-right"
+                >
                   Forgot password?
                 </p>
               )}
@@ -493,6 +498,12 @@ const Login = () => {
           <Link to="/privacy-policy" className="text-primary-600 hover:underline">Privacy Policy</Link>.
         </p>
       </div>
+      
+      {/* Forgot Password Modal */}
+      <ForgotPasswordModal 
+        isOpen={isForgotPasswordOpen} 
+        onClose={() => setIsForgotPasswordOpen(false)} 
+      />
     </div>
   );
 };
